@@ -1,2 +1,2 @@
-# unit-two-final-project-Corbin-P
-LaunchCode Unit 2 Final Project app
+# LaunchCode Unit 2 Final Project: WistLish
+A full-stack web application for building and sharing wish lists
