@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 public class User {
-    // creating the structure of the user model with necessary foreign keys
+    // creating the structure with necessary foreign keys
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private int id;
@@ -38,7 +38,6 @@ public class User {
     }
 
     // Getters and Setters
-
     public int getId() {
         return id;
     }

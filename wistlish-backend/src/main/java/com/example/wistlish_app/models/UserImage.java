@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class UserImage {
-
+    // creating the structure with necessary foreign keys
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -21,7 +21,6 @@ public class UserImage {
     }
 
     // Getters and Setters
-
     public int getId() {
         return id;
     }

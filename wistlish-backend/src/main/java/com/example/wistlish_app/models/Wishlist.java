@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 public class Wishlist {
-    //
+    // creating the structure with necessary foreign keys
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Entity
 public class Item {
-    // creating the structure of the item model with necessary foreign keys
+    // creating the structure with necessary foreign keys
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
