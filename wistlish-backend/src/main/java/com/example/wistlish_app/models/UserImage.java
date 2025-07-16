@@ -8,7 +8,7 @@ public class UserImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    @Column(length = 2083) // URL length limit
     private String imageUrl;
 
     @OneToOne(mappedBy = "userImg")
