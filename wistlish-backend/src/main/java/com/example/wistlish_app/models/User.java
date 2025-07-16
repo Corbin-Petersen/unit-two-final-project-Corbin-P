@@ -28,7 +28,6 @@ public class User {
 
     // Constructors
     public User() {}
-
     public User(String firstName, String lastName, String email, String userPass) {
         this.firstName = firstName;
         this.lastName = lastName;

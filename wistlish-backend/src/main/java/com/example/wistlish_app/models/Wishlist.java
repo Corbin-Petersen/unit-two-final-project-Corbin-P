@@ -42,7 +42,6 @@ public class Wishlist {
     }
 
     // Getters and Setters
-
     public int getId() {
         return id;
     }
@@ -74,10 +73,6 @@ public class Wishlist {
     public LocalDate getCreatedOn() {
         return createdOn;
     }
-
-//    public void setCreatedOn(LocalDate createdOn) {
-//        this.createdOn = createdOn;
-//    }
 
     public LocalDate getLastUpdate() {
         return lastUpdate;

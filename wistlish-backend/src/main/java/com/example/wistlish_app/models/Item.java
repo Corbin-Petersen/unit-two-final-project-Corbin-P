@@ -39,7 +39,6 @@ public class Item {
     }
 
     // Getters and Setters
-
     public int getId() {
         return id;
     }
@@ -95,10 +94,6 @@ public class Item {
     public LocalDate getCreatedOn() {
         return createdOn;
     }
-
-//    public void setCreatedOn(LocalDate createdOn) {
-//        this.createdOn = createdOn;
-//    }
 
     public Wishlist getList() {
         return list;
