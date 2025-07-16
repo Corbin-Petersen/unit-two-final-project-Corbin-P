@@ -13,10 +13,13 @@ public class Item {
     private int id;
 
     private String name;
+    @Column(length = 2083) // URL length limit
     private String itemUrl;
+    @Column(length = 2083) // URL length limit
     private String imageUrl;
     private int quantity;
     private int cost;
+    @Column(columnDefinition = "TINYINT") // Using TINYINT for boolean in MySQL
     private boolean isClaimed;
     private LocalDate createdOn;
 

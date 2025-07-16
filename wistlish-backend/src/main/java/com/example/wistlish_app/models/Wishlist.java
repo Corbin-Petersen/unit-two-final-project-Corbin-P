@@ -16,7 +16,9 @@ public class Wishlist {
     private int id;
 
     private String name;
+    @Column(length = 500)
     private String description;
+    @Column(columnDefinition = "TINYINT") // Using TINYINT for boolean in MySQL
     private boolean useClaimed;
     private LocalDate createdOn;
     private LocalDate lastUpdate;
@@ -26,7 +28,7 @@ public class Wishlist {
     @JsonBackReference
     private User user;
 
-    @OneToMany(mappedBy="listId")
+    @OneToMany(mappedBy="list")
     @JsonManagedReference
     private final List<Item> items = new ArrayList<>();
 

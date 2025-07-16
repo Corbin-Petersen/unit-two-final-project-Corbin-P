@@ -16,22 +16,24 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
+    private String username;
     private String userPass;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_img", referencedColumnName = "id")
     private UserImage userImg;
 
-    @OneToMany(mappedBy="userId")
+    @OneToMany(mappedBy="user")
     @JsonManagedReference
     private final List<Wishlist> lists = new ArrayList<>();
 
     // Constructors
     public User() {}
-    public User(String firstName, String lastName, String email, String userPass) {
+    public User(String firstName, String lastName, String email, String username, String userPass) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.username = username;
         this.userPass = userPass;
     }
 
@@ -63,6 +65,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getUserPass() {
