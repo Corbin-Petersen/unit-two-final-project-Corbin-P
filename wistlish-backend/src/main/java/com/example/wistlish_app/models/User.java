@@ -22,7 +22,7 @@ public class User {
     @JoinColumn(name = "user_img", referencedColumnName = "id")
     private UserImage userImg;
 
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="userId")
     @JsonManagedReference
     private final List<Wishlist> lists = new ArrayList<>();
 
@@ -80,5 +80,9 @@ public class User {
 
     public void setUserImg(UserImage userImg) {
         this.userImg = userImg;
+    }
+
+    public List<Wishlist> getLists() {
+        return lists;
     }
 }
