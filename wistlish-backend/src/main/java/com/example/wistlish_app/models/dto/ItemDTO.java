@@ -9,7 +9,6 @@ public class ItemDTO {
     private String imageUrl;
     private int quantity;
     private int cost;
-    private boolean isClaimed;
     private int listId;
 
     // Getters and Setters
@@ -52,14 +51,6 @@ public class ItemDTO {
 
     public void setCost(int cost) {
         this.cost = cost;
-    }
-
-    public boolean getIsClaimed() {
-        return isClaimed;
-    }
-
-    public void setIsClaimed(boolean isClaimed) {
-        this.isClaimed = isClaimed;
     }
 
     public int getListId() {

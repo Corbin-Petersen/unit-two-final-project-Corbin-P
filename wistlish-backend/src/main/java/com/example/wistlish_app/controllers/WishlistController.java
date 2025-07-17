@@ -47,10 +47,10 @@ public class WishlistController {
     // POST a new list
     @PostMapping(value="/add", consumes=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createNewList(@RequestBody WishlistDTO listData) {
-        if (listData.getName() == null || listData.getName().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("List name cannot be empty.");
-        }
         User user = userRepository.findById(listData.getUserId()).orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID: " + listData.getUserId() + " not found.");
+        }
         Wishlist newList = new Wishlist(listData.getName(), listData.getDescription(), listData.getUseClaimed(), user);
         wishlistRepository.save(newList);
         return ResponseEntity.status(HttpStatus.CREATED).body(newList);
