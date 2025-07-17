@@ -2,6 +2,7 @@ package com.example.wistlish_app.controllers;
 
 import com.example.wistlish_app.models.User;
 import com.example.wistlish_app.models.Wishlist;
+import com.example.wistlish_app.models.dto.WishlistDTO;
 import com.example.wistlish_app.repositories.UserRepository;
 import com.example.wistlish_app.repositories.WishlistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/lists")
 public class WishlistController {
-
+    // connect repositories
     @Autowired
     WishlistRepository wishlistRepository;
-
     @Autowired
     UserRepository userRepository;
 
@@ -46,12 +46,12 @@ public class WishlistController {
 
     // POST a new list
     @PostMapping(value="/add", consumes=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createNewList(@RequestBody Wishlist list) {
-        if (list.getName() == null || list.getName().isEmpty()) {
+    public ResponseEntity<?> createNewList(@RequestBody WishlistDTO listData) {
+        if (listData.getName() == null || listData.getName().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("List name cannot be empty.");
         }
-        User user = userRepository.findById(list.getUser().getId()).orElse(null);
-        Wishlist newList = new Wishlist(list.getName(), list.getDescription(), list.getUseClaimed(), user);
+        User user = userRepository.findById(listData.getUserId()).orElse(null);
+        Wishlist newList = new Wishlist(listData.getName(), listData.getDescription(), listData.getUseClaimed(), user);
         wishlistRepository.save(newList);
         return ResponseEntity.status(HttpStatus.CREATED).body(newList);
     }
