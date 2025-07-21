@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,7 +22,7 @@ public class UserController {
     @Autowired
     UserService userService;
     @Autowired
-    PasswordEncoder passwordEncoder;
+    AuthenticationManager authenticationManager;
 
     // Register a new user
     @PostMapping(value = "/user/register", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -32,13 +35,20 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> loginUser(@RequestBody User user) {
-        User existingUser = userService.findByEmail(user.getEmail());
-        if (existingUser != null && passwordEncoder.matches(user.getUserPass(), existingUser.getUserPass())) {
-            return ResponseEntity.ok(existingUser);
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        Authentication authenticationRequest =
+                UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
+        Authentication authenticationResponse =
+                authenticationManager.authenticate(authenticationRequest);
+
+        if (authenticationResponse.isAuthenticated()) {
+            return ResponseEntity.ok("Login successful");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
         }
+    }
+
+    public record LoginRequest(String username, String password) {
     }
 }

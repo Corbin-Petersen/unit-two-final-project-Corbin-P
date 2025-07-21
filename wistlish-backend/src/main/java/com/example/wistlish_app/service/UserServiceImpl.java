@@ -4,6 +4,7 @@ import com.example.wistlish_app.models.User;
 import com.example.wistlish_app.models.dto.UserDTO;
 import com.example.wistlish_app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
