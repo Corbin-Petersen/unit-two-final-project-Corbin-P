@@ -7,7 +7,6 @@ import com.example.wistlish_app.repositories.ItemRepository;
 import com.example.wistlish_app.repositories.WishlistRepository;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.helper.HttpConnection;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -73,7 +72,7 @@ public class ItemController {
     }
 
     // GET a specific item by ID
-    @GetMapping(value="/item/{itemId}", produces= MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/item/{itemId}", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getItemById(@PathVariable(value = "itemId") int itemId) {
         Item item = itemRepository.findById(itemId).orElse(null);
         if (item == null) {
@@ -93,5 +92,17 @@ public class ItemController {
         Item newItem = new Item(itemData.getName(), itemData.getItemUrl(), itemData.getImageUrl(), itemData.getQuantity(), itemData.getCost(), list);
         itemRepository.save(newItem);
         return ResponseEntity.status(HttpStatus.CREATED).body(newItem);
+    }
+
+    // PUT to update an existing item and toggle it's claimed status
+    @PutMapping(value="/update/{itemId}", produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> toggleClaimed(@PathVariable(value = "itemId") int itemId) {
+        Item existingItem = itemRepository.findById(itemId).orElse(null);
+        if (existingItem == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item with ID: " + itemId + " not found.");
+        }
+        existingItem.setIsClaimed(!existingItem.getIsClaimed());
+        itemRepository.save(existingItem);
+        return ResponseEntity.ok(existingItem);
     }
 }
