@@ -23,7 +23,7 @@ public class WishlistController {
     UserRepository userRepository;
 
     // GET all lists for a user
-    @GetMapping(value="/{userId}", produces= MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAllLists(@PathVariable(value = "userId") int userId) {
         List<Wishlist> userLists = wishlistRepository.findAllByUserId(userId);
         if (userLists == null || userLists.isEmpty()) {
@@ -34,7 +34,7 @@ public class WishlistController {
     }
 
     // GET a specific list by ID
-    @GetMapping(value="/list/{listId}", produces= MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/list/{listId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getListById(@PathVariable(value = "listId") int listId) {
         Wishlist list = wishlistRepository.findById(listId).orElse(null);
         if (list == null) {
@@ -45,7 +45,7 @@ public class WishlistController {
     }
 
     // POST a new list
-    @PostMapping(value="/add", consumes=MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createNewList(@RequestBody WishlistDTO listData) {
         User user = userRepository.findById(listData.getUserId()).orElse(null);
         if (user == null) {
@@ -57,7 +57,7 @@ public class WishlistController {
     }
 
     // PUT to update an existing list
-    @PutMapping(value="/update/{listId}", consumes=MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/update/{listId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateList(@PathVariable(value = "listId") int listId, @RequestBody Wishlist updatedList) {
         Wishlist existingList = wishlistRepository.findById(listId).orElse(null);
         if (existingList == null) {
@@ -72,7 +72,7 @@ public class WishlistController {
     }
 
     // DELETE a list
-    @DeleteMapping(value="/delete/{listId}")
+    @DeleteMapping("/delete/{listId}")
     public ResponseEntity<?> deleteList(@PathVariable(value = "listId") int listId) {
         Wishlist list = wishlistRepository.findById(listId).orElse(null);
         if (list == null) {

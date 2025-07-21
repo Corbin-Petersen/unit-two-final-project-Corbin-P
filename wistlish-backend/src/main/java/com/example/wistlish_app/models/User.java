@@ -1,6 +1,7 @@
 package com.example.wistlish_app.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class User {
     private String lastName;
     private String email;
     private String username;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String userPass;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -29,11 +31,10 @@ public class User {
 
     // Constructors
     public User() {}
-    public User(String firstName, String lastName, String email, String username, String userPass) {
+    public User(String firstName, String lastName, String email, String userPass) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.username = username;
         this.userPass = userPass;
     }
 
@@ -66,13 +67,13 @@ public class User {
         this.email = email;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
+//    public String getUsername() {
+//        return username;
+//    }
+//
+//    public void setUsername(String username) {
+//        this.username = username;
+//    }
 
     public String getUserPass() {
         return userPass;

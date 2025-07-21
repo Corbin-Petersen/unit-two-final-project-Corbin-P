@@ -1,13 +1,44 @@
 package com.example.wistlish_app.controllers;
 
-import com.example.wistlish_app.repositories.UserRepository;
+import com.example.wistlish_app.models.User;
+import com.example.wistlish_app.models.dto.UserDTO;
+import com.example.wistlish_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
+    // Register a new user
+    @PostMapping(value = "/user/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createNewUser(@RequestBody UserDTO userData) {
+        User existingUser = userService.findByEmail(userData.getEmail());
+        if (existingUser != null) {
+            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("User with email " + existingUser.getEmail() + " already exists.");
+        }
+        User newUser = userService.saveUser(userData);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+    }
+
+    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> loginUser(@RequestBody User user) {
+        User existingUser = userService.findByEmail(user.getEmail());
+        if (existingUser != null && passwordEncoder.matches(user.getUserPass(), existingUser.getUserPass())) {
+            return ResponseEntity.ok(existingUser);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        }
+    }
 }
