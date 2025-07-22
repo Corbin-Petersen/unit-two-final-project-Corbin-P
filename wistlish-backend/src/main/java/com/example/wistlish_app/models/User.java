@@ -70,14 +70,6 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-//    public String getUsername() {
-//        return username;
-//    }
-//
-//    public void setUsername(String username) {
-//        this.username = username;
-//    }
-
     public void setUserPass(String userPass) {
         this.userPass = userPass;
     }

@@ -4,12 +4,14 @@ import com.example.wistlish_app.models.User;
 import com.example.wistlish_app.models.dto.UserDTO;
 import com.example.wistlish_app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
@@ -28,4 +30,12 @@ public class UserServiceImpl implements UserService{
         User newUser = new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getUserPass());
         return userRepository.save(newUser);
     }
-}
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+        return user;
+    }}
