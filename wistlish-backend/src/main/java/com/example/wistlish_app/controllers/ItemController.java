@@ -60,19 +60,8 @@ public class ItemController {
         }
     }
 
-    // GET all items in a list
-    @GetMapping(value="/{listId}", produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getAllItems(@PathVariable(value = "listId") int listId) {
-        List<Item> items = itemRepository.findAllByListId(listId);
-        if (items == null || items.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No items found for list with ID: " + listId);
-        } else {
-            return ResponseEntity.ok(items);
-        }
-    }
-
     // GET a specific item by ID
-    @GetMapping(value="/item/{itemId}", produces=MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/{itemId}", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getItemById(@PathVariable(value = "itemId") int itemId) {
         Item item = itemRepository.findById(itemId).orElse(null);
         if (item == null) {
@@ -95,7 +84,7 @@ public class ItemController {
     }
 
     // PUT to update an existing item and toggle it's claimed status
-    @PutMapping(value="/update/{itemId}", produces=MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value="/{itemId}/update", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> toggleClaimed(@PathVariable(value = "itemId") int itemId) {
         Item existingItem = itemRepository.findById(itemId).orElse(null);
         if (existingItem == null) {
@@ -104,5 +93,16 @@ public class ItemController {
         existingItem.setIsClaimed(!existingItem.getIsClaimed());
         itemRepository.save(existingItem);
         return ResponseEntity.ok(existingItem);
+    }
+
+    // DELETE an item
+    @DeleteMapping("/{itemId}/delete")
+    public ResponseEntity<?> deleteItem(@PathVariable(value = "itemId") int itemId) {
+        Item item = itemRepository.findById(itemId).orElse(null);
+        if (item == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item with ID: " + itemId + " not found.");
+        }
+        itemRepository.delete(item);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
