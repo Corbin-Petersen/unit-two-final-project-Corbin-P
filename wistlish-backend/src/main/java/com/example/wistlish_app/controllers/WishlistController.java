@@ -58,7 +58,7 @@ public class WishlistController {
 
     // PUT to update an existing list
     @PutMapping(value = "/update/{listId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateList(@PathVariable(value = "listId") int listId, @RequestBody Wishlist updatedList) {
+    public ResponseEntity<?> updateList(@PathVariable(value = "listId") int listId, @RequestBody WishlistDTO updatedList) {
         Wishlist existingList = wishlistRepository.findById(listId).orElse(null);
         if (existingList == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("List with ID: " + listId + " not found.");
