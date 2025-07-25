@@ -25,17 +25,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User saveUser(UserDTO user) {
+        // Check if the user already exists
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("User with email " + user.getEmail() + " already exists.");
+        }
         // Encrypt the password before saving
         user.setUserPass(passwordEncoder.encode(user.getUserPass()));
-        User newUser = new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getUserPass());
+        User newUser = new User(
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getUserPass());
         return userRepository.save(newUser);
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
+        User existingUser = userRepository.findByEmail(email);
+        if (existingUser == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        return user;
-    }}
+        return existingUser;
+    }
+}

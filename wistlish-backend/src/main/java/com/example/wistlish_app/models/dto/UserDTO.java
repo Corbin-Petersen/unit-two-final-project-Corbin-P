@@ -1,10 +1,17 @@
 package com.example.wistlish_app.models.dto;
 
+import jakarta.validation.constraints.*;
+
 public class UserDTO {
     // make fields necessary for user creation
+    @NotBlank(message = "First Name is required")
     private String firstName;
+    @NotBlank(message = "Last Name is required")
     private String lastName;
+    @Email(message = "Enter a valid email address")
+    @NotNull(message = "Email cannot be empty")
     private String email;
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     private String userPass;
 
     // Getters and Setters

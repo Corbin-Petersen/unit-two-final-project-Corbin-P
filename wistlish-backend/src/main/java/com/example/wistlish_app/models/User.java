@@ -3,9 +3,12 @@ package com.example.wistlish_app.models;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,12 +20,24 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private int id;
-
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String email;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String userPass;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Timestamp createdAt;
+    @UpdateTimestamp
+    private Timestamp updatedAt;
+
+    // OTP related fields
+    private String verifyOtp;
+    private Boolean isAccountVerified;
+    private Long verifyOtpExpireAt;
+    private String resetOtp;
+    private Long resetOtpExpireAt;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_img", referencedColumnName = "id")
@@ -39,6 +54,9 @@ public class User implements UserDetails {
         this.lastName = lastName;
         this.email = email;
         this.userPass = userPass;
+        this.isAccountVerified = false;
+        this.resetOtpExpireAt = 0L;
+        this.verifyOtpExpireAt = 0L;
     }
 
     // Getters and Setters
@@ -84,6 +102,62 @@ public class User implements UserDetails {
 
     public List<Wishlist> getLists() {
         return lists;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getVerifyOtp() {
+        return verifyOtp;
+    }
+
+    public void setVerifyOtp(String verifyOtp) {
+        this.verifyOtp = verifyOtp;
+    }
+
+    public Boolean getAccountVerified() {
+        return isAccountVerified;
+    }
+
+    public void setAccountVerified(Boolean accountVerified) {
+        isAccountVerified = accountVerified;
+    }
+
+    public Long getVerifyOtpExpireAt() {
+        return verifyOtpExpireAt;
+    }
+
+    public void setVerifyOtpExpireAt(Long verifyOtpExpireAt) {
+        this.verifyOtpExpireAt = verifyOtpExpireAt;
+    }
+
+    public String getResetOtp() {
+        return resetOtp;
+    }
+
+    public void setResetOtp(String resetOtp) {
+        this.resetOtp = resetOtp;
+    }
+
+    public Long getResetOtpExpireAt() {
+        return resetOtpExpireAt;
+    }
+
+    public void setResetOtpExpireAt(Long resetOtpExpireAt) {
+        this.resetOtpExpireAt = resetOtpExpireAt;
     }
 
     // Overriding methods from UserDetails interface

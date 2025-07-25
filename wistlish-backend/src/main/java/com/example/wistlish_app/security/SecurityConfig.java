@@ -14,6 +14,8 @@ import org.springframework.security.authentication.ott.OneTimeToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,8 +25,13 @@ import org.springframework.security.web.authentication.ott.RedirectOneTimeTokenG
 import org.springframework.security.web.csrf.*;
 import org.springframework.security.web.util.UrlUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 @Configuration
@@ -42,28 +49,51 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .cors(Customizer.withDefaults())
+            .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity, enable in production
             .authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/", "/api/items/scrape-img", "/user/register", "/login", "/login/ott").permitAll()
-                .anyRequest().authenticated()
-            )
-            .httpBasic(Customizer.withDefaults())
-            .formLogin((form) -> form
-                .loginPage("/")
-                .permitAll())
-            .oneTimeTokenLogin((ott) -> ott
-                .showDefaultSubmitPage(false)
-                .tokenGeneratingUrl("/login/ott")
-            )
-            .logout((logout) -> logout
-                .logoutSuccessUrl("/")
-            )
-            .csrf((csrf) -> csrf
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
-            );
+                .requestMatchers("/", "/api/items/scrape-img", "/user/register", "/login", "/send-reset").permitAll()
+                .anyRequest().authenticated())
+            .sessionManagement((session) -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .logout(AbstractHttpConfigurer::disable)
+//            .httpBasic(Customizer.withDefaults())
+//            .formLogin((form) -> form
+//                .loginPage("/")
+//                .permitAll())
+//            .oneTimeTokenLogin((ott) -> ott
+//                .showDefaultSubmitPage(false)
+//                .tokenGeneratingUrl("/login/ott")
+//            )
+//            .logout((logout) -> logout
+//                .logoutSuccessUrl("/")
+//            )
+//            .csrf((csrf) -> csrf
+//                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+        ;
 
         return http.build();
     }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        return new CorsFilter(corsConfigurationSource());
+    }
+
+    private CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    // -------------------------------------
 
     @Bean
     public OneTimeTokenGenerationSuccessHandler oneTimeTokenHandler (){
@@ -94,7 +124,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
-
         return new ProviderManager(authenticationProvider);
     }
 
