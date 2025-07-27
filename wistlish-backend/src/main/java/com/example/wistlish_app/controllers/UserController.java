@@ -1,29 +1,31 @@
 package com.example.wistlish_app.controllers;
 
 import com.example.wistlish_app.models.User;
+import com.example.wistlish_app.models.dto.AuthResponse;
 import com.example.wistlish_app.models.dto.UserDTO;
 import com.example.wistlish_app.service.UserService;
+import com.example.wistlish_app.util.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired
     UserService userService;
     @Autowired
     AuthenticationManager authenticationManager;
+    @Autowired
+    JwtUtil jwtUtil;
 
     // Register a new user
     @PostMapping(value = "/user/register", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -38,13 +40,19 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        Authentication authenticationRequest = UsernamePasswordAuthenticationToken
-                .unauthenticated(loginRequest.username(), loginRequest.password());
-        Authentication authenticationResponse =
-                authenticationManager.authenticate(authenticationRequest);
+        Authentication authenticationResponse = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
         if (authenticationResponse.isAuthenticated()) {
-            User user = userService.findByEmail(loginRequest.username());
-            return ResponseEntity.ok("Login successful");
+            final User user = userService.findByEmail(loginRequest.username());
+            final String jwtToken = jwtUtil.generateToken(user);
+            ResponseCookie cookie = ResponseCookie.from("jwt", jwtToken)
+                    .httpOnly(true)
+                    .path("/")
+                    .maxAge(Duration.ofDays(1)) // 1 day
+                    .sameSite("Strict")
+                    .build();
+            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+                    .body(new AuthResponse(loginRequest.username(), jwtToken));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email or password is incorrect");
         }
