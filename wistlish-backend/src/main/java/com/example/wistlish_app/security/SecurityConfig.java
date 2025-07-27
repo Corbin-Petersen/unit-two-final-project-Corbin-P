@@ -52,7 +52,7 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults())
             .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity, enable in production
             .authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/", "/api/items/scrape-img", "/user/register", "/login", "/send-reset").permitAll()
+                .requestMatchers("/", "/api/items/scrape-img", "/api/user/register", "/api/login", "/api/send-reset").permitAll()
                 .anyRequest().authenticated())
             .sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -128,32 +128,32 @@ public class SecurityConfig {
     }
 
     // additional class definition for handling CSRF tokens in a single-page application context
-    static final class SpaCsrfTokenRequestHandler implements CsrfTokenRequestHandler {
-        private final CsrfTokenRequestHandler plain = new CsrfTokenRequestAttributeHandler();
-        private final CsrfTokenRequestHandler xor = new XorCsrfTokenRequestAttributeHandler();
-
-        @Override
-        public void handle(HttpServletRequest request, HttpServletResponse response, Supplier<CsrfToken> csrfToken) {
-            /*  Always use XorCsrfTokenRequestAttributeHandler to provide BREACH protection of
-                the CsrfToken when it is rendered in the response body. */
-            this.xor.handle(request, response, csrfToken);
-
-            //  Render the token value to a cookie by causing the deferred token to be loaded.
-            csrfToken.get();
-        }
-
-        @Override
-        public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
-            String headerValue = request.getHeader(csrfToken.getHeaderName());
-            /*  If the request contains a request header, use CsrfTokenRequestAttributeHandler
-                to resolve the CsrfToken. This applies when a single-page application includes
-                the header value automatically, which was obtained via a cookie containing the
-                raw CsrfToken.
-                In all other cases (e.g., if the request contains a request parameter), use
-                XorCsrfTokenRequestAttributeHandler to resolve the CsrfToken. This applies
-                when a server-side rendered form includes the _csrf request parameter as a
-                hidden input.  */
-            return (StringUtils.hasText(headerValue) ? this.plain : this.xor).resolveCsrfTokenValue(request, csrfToken);
-        }
-    }
+//    static final class SpaCsrfTokenRequestHandler implements CsrfTokenRequestHandler {
+//        private final CsrfTokenRequestHandler plain = new CsrfTokenRequestAttributeHandler();
+//        private final CsrfTokenRequestHandler xor = new XorCsrfTokenRequestAttributeHandler();
+//
+//        @Override
+//        public void handle(HttpServletRequest request, HttpServletResponse response, Supplier<CsrfToken> csrfToken) {
+//            /*  Always use XorCsrfTokenRequestAttributeHandler to provide BREACH protection of
+//                the CsrfToken when it is rendered in the response body. */
+//            this.xor.handle(request, response, csrfToken);
+//
+//            //  Render the token value to a cookie by causing the deferred token to be loaded.
+//            csrfToken.get();
+//        }
+//
+//        @Override
+//        public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
+//            String headerValue = request.getHeader(csrfToken.getHeaderName());
+//            /*  If the request contains a request header, use CsrfTokenRequestAttributeHandler
+//                to resolve the CsrfToken. This applies when a single-page application includes
+//                the header value automatically, which was obtained via a cookie containing the
+//                raw CsrfToken.
+//                In all other cases (e.g., if the request contains a request parameter), use
+//                XorCsrfTokenRequestAttributeHandler to resolve the CsrfToken. This applies
+//                when a server-side rendered form includes the _csrf request parameter as a
+//                hidden input.  */
+//            return (StringUtils.hasText(headerValue) ? this.plain : this.xor).resolveCsrfTokenValue(request, csrfToken);
+//        }
+//    }
 }
