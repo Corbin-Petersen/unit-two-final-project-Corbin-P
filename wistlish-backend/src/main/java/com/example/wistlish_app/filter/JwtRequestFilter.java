@@ -42,22 +42,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        String jwt = null;
+        String jwtToken = null;
         String email = null;
 
         // 1. Check for the Authorization header
         final String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwt = authHeader.substring(7);
+            jwtToken = authHeader.substring(7);
         }
 
         // 2. If not in the header, check for a cookie
-        if (jwt == null) {
+        if (jwtToken == null) {
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
                     if (cookie.getName().equals("jwt")) {
-                        jwt = cookie.getValue();
+                        jwtToken = cookie.getValue();
                         break;
                     }
                 }
@@ -65,11 +65,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         // 3. validate the token and set security context
-        if (jwt != null) {
-            email = jwtUtil.extractEmail(jwt);
+        if (jwtToken != null) {
+            email = jwtUtil.extractEmail(jwtToken);
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                if (jwtUtil.validateToken(jwt, userDetails)) {
+                if (jwtUtil.validateToken(jwtToken, userDetails)) {
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

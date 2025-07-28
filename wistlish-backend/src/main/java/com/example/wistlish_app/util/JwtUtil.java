@@ -40,7 +40,7 @@ public class JwtUtil {
                 .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // Token valid for 10 hours
-                .signWith(key, Jwts.SIG.HS512)
+                .signWith(key, Jwts.SIG.HS256)
                 .compact();
     }
 
