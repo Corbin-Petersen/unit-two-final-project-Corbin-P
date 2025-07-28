@@ -22,9 +22,9 @@ import java.util.List;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
     @Autowired
-    JwtUtil jwtUtil;
+    private JwtUtil jwtUtil;
 
     private static final List<String> PUBLIC_URLS = List.of(
             "/api/user/register",
