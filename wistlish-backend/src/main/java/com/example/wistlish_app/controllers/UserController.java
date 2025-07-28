@@ -3,6 +3,7 @@ package com.example.wistlish_app.controllers;
 import com.example.wistlish_app.models.User;
 import com.example.wistlish_app.models.dto.AuthResponse;
 import com.example.wistlish_app.models.dto.UserDTO;
+import com.example.wistlish_app.repositories.UserRepository;
 import com.example.wistlish_app.service.UserService;
 import com.example.wistlish_app.util.JwtUtil;
 import jakarta.validation.Valid;
@@ -11,7 +12,11 @@ import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -57,6 +62,15 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email or password is incorrect");
         }
+    }
+
+    @GetMapping("/profile")
+    public User getProfile(@CurrentSecurityContext(expression = "authentication?.name") String email) {
+        User existingUser = userService.findByEmail(email);
+        if (existingUser == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+        return existingUser;
     }
 
     public record LoginRequest(String username, String password) {
