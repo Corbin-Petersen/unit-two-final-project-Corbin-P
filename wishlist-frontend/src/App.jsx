@@ -1,16 +1,22 @@
 import { useState } from 'react';
 import { Route, Routes } from "react-router";
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Home from './components/Home';
-import Item from './components/Item';
-import Lists from './components/Lists';
-import NewItem from './components/NewItem';
-import NewList from './components/NewList';
-import ViewList from './components/ViewList';
-import ShareList from './components/ShareList';
+import { 
+  Footer,
+  Header,
+  Item,
+  NavBlock,
+  NewItem,
+  NewList,
+  ShareItem
+} from './components/exports';
+import {
+  Home,
+  Lists,
+  ViewList,
+  ShareList
+} from './pages/exports';
+import { ToastContainer } from 'react-toastify';
 import presetData from './data/userData.json';
-// import fontawesome icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -18,13 +24,35 @@ library.add(fas);
 
 function App() {
   const [ loggedIn, setLoggedIn ] = useState(null);
+  const [ userID, setUserID ] = useState(null);
   
   // send dummy data to local storage
-  const data = JSON.parse(localStorage.getItem('fakeData'));
-  !data && localStorage.setItem('fakeData', JSON.stringify(presetData));
+  // const data = JSON.parse(localStorage.getItem('fakeData'));
+  // !data && localStorage.setItem('fakeData', JSON.stringify(presetData));
+
+  // fetch Users
+  const fetchLists = async () => {
+    let lists = [];
+    let response;
+    let data;
+    try {
+      response = await fetch(`http://localhost:8080/api/${userId}/lists`);
+      data = await response.json();
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      // TODO: maybe use state variable to handle error state
+    }
+    return users.map(user => ({
+      userID: user.id,
+      name: user.name,
+      email: user.email,
+      lists: []
+    }));
+  }
     
   return (
     <>
+      <ToastContainer />
       <Header loggedIn={loggedIn} setLoggedIn={setLoggedIn} data={data} />
         <Routes>
           <Route path="/" element={<Home loggedIn={loggedIn} setLoggedIn={setLoggedIn} data={data} />} />
