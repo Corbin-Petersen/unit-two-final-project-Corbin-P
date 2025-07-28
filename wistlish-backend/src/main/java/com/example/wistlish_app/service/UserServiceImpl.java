@@ -4,6 +4,7 @@ import com.example.wistlish_app.models.User;
 import com.example.wistlish_app.models.dto.UserDTO;
 import com.example.wistlish_app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +17,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     UserRepository userRepository;
     @Autowired
+    @Lazy
     PasswordEncoder passwordEncoder;
 
     @Override

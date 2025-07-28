@@ -39,6 +39,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
+    // test method for checking authentication with Postman
+    @GetMapping("/test")
+    public String test() {
+        return "Authentication is working!";
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Authentication authenticationResponse = authenticationManager

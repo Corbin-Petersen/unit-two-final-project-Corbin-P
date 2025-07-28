@@ -1,7 +1,5 @@
 package com.example.wistlish_app.filter;
 
-import com.example.wistlish_app.models.User;
-import com.example.wistlish_app.service.UserService;
 import com.example.wistlish_app.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

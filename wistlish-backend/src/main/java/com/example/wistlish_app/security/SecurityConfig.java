@@ -1,5 +1,6 @@
 package com.example.wistlish_app.security;
 
+import com.example.wistlish_app.filter.JwtRequestFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.ott.OneTimeTokenGenerationSuccessHandler;
 import org.springframework.security.web.authentication.ott.RedirectOneTimeTokenGenerationSuccessHandler;
 import org.springframework.security.web.csrf.*;
@@ -40,6 +42,8 @@ public class SecurityConfig {
 
     @Autowired
     JavaMailSender mailSender;
+    @Autowired
+    JwtRequestFilter jwtRequestFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -57,6 +61,7 @@ public class SecurityConfig {
             .sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .logout(AbstractHttpConfigurer::disable)
+            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 //            .httpBasic(Customizer.withDefaults())
 //            .formLogin((form) -> form
 //                .loginPage("/")
@@ -71,8 +76,6 @@ public class SecurityConfig {
 //            .csrf((csrf) -> csrf
 //                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
-        ;
-
         return http.build();
     }
 
