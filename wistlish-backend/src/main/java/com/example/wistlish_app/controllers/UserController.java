@@ -49,16 +49,21 @@ public class UserController {
         Authentication authenticationResponse = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
         if (authenticationResponse.isAuthenticated()) {
-            final UserDetails userDetails = userService.findByEmail(loginRequest.username());
+            final User userDetails = userService.findByEmail(loginRequest.username());
             final String jwtToken = jwtUtil.generateToken(userDetails);
             ResponseCookie cookie = ResponseCookie.from("jwt", jwtToken)
-                    .httpOnly(true)
-                    .path("/")
-                    .maxAge(Duration.ofDays(1)) // 1 day
-                    .sameSite("Strict")
-                    .build();
+                .httpOnly(true)
+                .path("/")
+                .maxAge(Duration.ofDays(1)) // 1 day
+                .sameSite("Strict")
+                .build();
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-                    .body(new AuthResponse(loginRequest.username(), jwtToken));
+                .body(new AuthResponse(
+                    userDetails.getId(),
+                    userDetails.getFirstName(),
+                    userDetails.getLastName(),
+                    jwtToken)
+                );
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email or password is incorrect");
         }
