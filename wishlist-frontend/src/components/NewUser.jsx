@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function NewUser( props ) {
     const { closeModal } = props;
-    const [ formData, setFormData ] = useState({
+    const [ newUser, setNewUser ] = useState({
         firstName: "",
         lastName: "",
         email: "",
@@ -20,9 +21,31 @@ export default function NewUser( props ) {
     };
 
     // register new user
-    const registerUser = (e) => {
+    const registerUser = async (e) => {
         e.preventDefault();
 
+        let response;
+        
+        try {
+            // register API
+            response = await fetch(`http://localhost:8080/api/user/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newUser)
+            });
+            if (response.ok) {
+                // handle successful registration
+                closeModal();
+                toast.success("Registration successful! You can now log in.");
+            } else {
+                // handle error response
+                toast.error("Oops! That email is already registered. Please try again.");
+            }
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
     }
 
     return (

@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import Error from "../components/Error";
 import NewUser from "../components/NewUser";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 
@@ -12,8 +12,9 @@ export default function Home( props ) {
     const { loggedIn, setLoggedIn, data } = props;
     const [ loginUser, setLoginUser ] = useState(null);
     const [ loginPass, setLoginPass ] = useState(null);
+    const [ isLoading, setIsLoading ] = useState(false);
     const [ modalDiv, setModalDiv ] = useState(null);
-    const loginError = useRef(0);
+    // const loginError = useRef(0);  ---------> (I don't think I need this anymore)
     const registerUser = useRef(0);
     const navigate = useNavigate();
     
@@ -42,26 +43,37 @@ export default function Home( props ) {
     }
 
     // function to handle login and set user and isLoggedIn
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         // prevent reload
         e.preventDefault();
-        
-        // validate submission, show error (if applicable), nav to Lists component
-        let myID = "";
-        let login = false; // set local false variable b/c state does not update inside functions
-        for (let users of data) {
-            if (loginUser == users.userName && loginPass == users.pass) {
-                myID = users.userID;
-                login = true;
-                setLoggedIn(users.userID);
-            }
-        }
-        login ? navigate(`${myID}/lists`) : openModal(loginError);
-    }
+        setIsLoading(true);
 
-    // useEffect(() => {
-    //     setLoggedIn(clickedIn);
-    // }, [clickedIn]);
+        let response;
+        let data;
+
+        try {
+            // login API
+            response = await fetch(`http://localhost:8080/api/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: loginUser, password: loginPass })
+            });
+            if (response.ok) {
+                // handle successful login
+                const data = await response.json();
+                setUserId(data.id);
+                navigate(`/${data.id}/lists`);
+            } else {
+                // handle error response
+                toast.error("Oops! Incorrect Username or Password. Please try again.");
+            }
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }    
+        setIsLoading(false);
+    }
 
     return (
         <div className="home-component">
@@ -79,19 +91,21 @@ export default function Home( props ) {
                 <form name="login-form" id="login" method="post" onSubmit={handleLogin}>
                     <h3>LOGIN</h3>
                     <label>EMAIL
-                        <input type="email" id="login-user" name="user" placeholder="valid@email.com" onChange={setUser} />
+                        <input type="email" id="login-user" name="loginUser" placeholder="valid@email.com" onChange={setUser} />
                     </label>
                     <label>PASSWORD
-                        <input type="password" id="login-pass" name="password" autoComplete="current password" onChange={setPass} />
+                        <input type="password" id="login-pass" name="loginPass" autoComplete="current password" onChange={setPass} />
                     </label>
                     <button type="submit">LOGIN</button>
                 </form>
                 <div>
                     <p>Don't have an account? <span className="emphasis" onClick={() => navigate("/signup")}>Sign up here!</span></p>
                 </div>
+                {/* ---------> (I don't think I need this anymore)
                 <div id="modal-error" className="modal-bg" ref={loginError}>
                     <Error closeModal={closeModal} />
-                </div>
+                </div> 
+                */}
                 <div className="modal-bg" ref={registerUser}>
                     <NewUser closeModal={closeModal} />
                 </div>
