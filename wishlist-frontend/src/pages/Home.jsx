@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import Error from "../components/Error";
+import NewUser from "../components/NewUser";
 import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -10,12 +12,13 @@ export default function Home( props ) {
     const { loggedIn, setLoggedIn, data } = props;
     const [ loginUser, setLoginUser ] = useState(null);
     const [ loginPass, setLoginPass ] = useState(null);
-    const [ clickedIn, setClickedIn ] = useState(null);
-    const modalDiv = useRef(0);
+    const [ modalDiv, setModalDiv ] = useState(null);
+    const loginError = useRef(0);
+    const registerUser = useRef(0);
     const navigate = useNavigate();
     
     // functions to handle modal fade-in and fade-out
-    const openModal = () => {
+    const openModal = (modalDiv) => {
         modalDiv.current.style.display = "flex";
         setTimeout(() => {
             modalDiv.current.style.opacity = "1";
@@ -53,7 +56,7 @@ export default function Home( props ) {
                 setLoggedIn(users.userID);
             }
         }
-        login ? navigate(`${myID}/lists`) : openModal();
+        login ? navigate(`${myID}/lists`) : openModal(loginError);
     }
 
     // useEffect(() => {
@@ -83,12 +86,14 @@ export default function Home( props ) {
                     </label>
                     <button type="submit">LOGIN</button>
                 </form>
-                <div id="modal-error" className="modal-bg" ref={modalDiv}>
-                    <div id="login-error" className="modal col">
-                        <button className="close square" onClick={closeModal}>&times;</button>
-                        <p>Oops! Incorrect Username or Password. <br/>
-                        Please try again.</p>
-                    </div>
+                <div>
+                    <p>Don't have an account? <span className="emphasis" onClick={() => navigate("/signup")}>Sign up here!</span></p>
+                </div>
+                <div id="modal-error" className="modal-bg" ref={loginError}>
+                    <Error closeModal={closeModal} />
+                </div>
+                <div className="modal-bg" ref={registerUser}>
+                    <NewUser closeModal={closeModal} />
                 </div>
             </div>
         </div>
