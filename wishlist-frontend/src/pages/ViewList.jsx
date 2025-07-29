@@ -1,47 +1,45 @@
-import { useEffect, useRef, useState, Fragment, useContext } from "react";
+import { useEffect, useRef, useState, Fragment } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import NewItem from "../components/NewItem";
 import Item from "../components/Item";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { AppContext } from "../context/AppContext";
 
 export default function ViewList( props ) {
     // pull in params and set variables
-    const { userID, listID } = useParams();
-    const { data } = props;
-    const {
-        isLoggedIn, setIsLoggedIn,
-        userData, setUserData,
-        setUserID,
-        isLoading, setIsLoading
-    } = useContext(AppContext);
+    const { listID } = useParams();
+    const { userInfo, userLists, isLoggedIn } = props;
     const newItemModal = useRef(null);
     const viewItemModal = useRef(null);
     const [ isVisible, setIsVisible ] = useState(false);
     const [ hasItems, setHasItems ] = useState(true);
     const [ thisItem, setThisItem ] = useState(null);
     const [ copied, setCopied ] = useState(false);
+    const [ list, setList ] = useState(null);
     const navigate = useNavigate();
         
     // const userInfo = data.find(user => user.userID == userID);
-
+    const thisList = () => {
+        setList(userLists.find(list => list.id === listID));
+    }
    
     useEffect(() => {
-        userList.listItems.length < 1 && setHasItems(false);
+        thisList();
+        list.length < 1 && setHasItems(false);
     }, []);
 
-    const hasSpace = !hasItems ? 0 : userList.listItems.length % 3;
+    // identify if list needs an added spacer
+    const hasSpace = !hasItems ? 0 : list.items.length % 3;
 
     const sharedID = `${listID}${Math.floor(Math.random() * 90) + 10}share`;
 
     // function to total cost of all items
     const listCost = () => {
         let total = 0;
-        userList.listItems.map(item => (
+        list.items.map(item => (
             item.quantity 
-            ? total += (item.itemCost * item.quantity)
-            : total += item.itemCost
+            ? total += (item.cost * item.quantity)
+            : total += item.cost
         ));
         return total.toFixed(2);
     }    
@@ -70,8 +68,8 @@ export default function ViewList( props ) {
     // function to convert list to text for simple sharing
     const saveToText = () => {
         let text = "";
-        userList.listItems.map((item) => {
-            text += `${item.itemName} - $${item.itemCost}: ${item.itemURL} \n \n`;
+        list.items.map((item) => {
+            text += `${item.name} - $${item.cost}: ${item.itemURL} \n \n`;
         });
         return text;
     }
@@ -94,8 +92,8 @@ export default function ViewList( props ) {
     return (
         <div className="component col">
             <div className="listview-header">
-                <h2>{userList.listName}</h2>
-                <p>{userList.listDesc}</p>
+                <h2>{list.name}</h2>
+                <p>{list.description}</p>
             </div>
             <div className="listview col">
                 <div className="list-btns row">
@@ -114,21 +112,21 @@ export default function ViewList( props ) {
                     <span id="cost-total">TOTAL: <b>${listCost()}</b></span>
                 </div>
                 <div className="list-display row">
-                    { hasItems ? userList.listItems.map(item => (
-                    <Fragment key={`${item.itemID}`}>
-                        <div id={`${item.itemID}`} className="item col" onClick={(e) => handleModal(e.currentTarget.nextElementSibling)} style={{pointerEvents: isVisible ? "none" : "auto"}}>
-                            <div className="item-block-img" style={{backgroundImage: item.itemImg == "" ? "/src/assets/default-img.png" : `url(${item.itemImg})`}}>
+                    { hasItems ? list.items.map(item => (
+                    <Fragment key={`${item.id}`}>
+                        <div id={`${item.id}`} className="item col" onClick={(e) => handleModal(e.currentTarget.nextElementSibling)} style={{pointerEvents: isVisible ? "none" : "auto"}}>
+                            <div className="item-block-img" style={{backgroundImage: item.imageUrl == "" ? "/src/assets/default-img.png" : `url(${item.imageUrl})`}}>
                             {item.quantity > 1 && 
                                 <p className="list-need">QUANTITY: <span className="list-need-num">{item.quantity}</span></p>
                             }
                             </div>
                             <div className="item-block-text">
-                                <h4>{item.itemName}</h4>
-                                <p className="price">${item.itemCost}</p>
+                                <h4>{item.name}</h4>
+                                <p className="price">${item.cost}</p>
                             </div>
                         </div>
-                        <div id={`${item.itemID}-view`} className="modal-bg" >
-                            <Item data={data} userInfo={userInfo} userList={userList} item={item} handleModal={handleModal} viewItemModal={viewItemModal} thisItem={thisItem} setThisItem={setThisItem} />
+                        <div id={`${item.id}-view`} className="modal-bg" >
+                            <Item userInfo={userInfo} list={list} item={item} handleModal={handleModal} viewItemModal={viewItemModal} thisItem={thisItem} setThisItem={setThisItem} />
                         </div>
                     </Fragment>
                     )) : (
@@ -142,7 +140,7 @@ export default function ViewList( props ) {
                 </div>
             </div>
             <div className="modal-bg" ref={newItemModal}>
-                <NewItem data={data} userInfo={userInfo} userList={userList} handleModal={handleModal} setHasItems={setHasItems} newItemModal={newItemModal} />
+                <NewItem data={data} userInfo={userInfo} list={list} handleModal={handleModal} setHasItems={setHasItems} newItemModal={newItemModal} />
             </div>
         </div>
     );

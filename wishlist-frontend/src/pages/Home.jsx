@@ -9,14 +9,15 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 export default function Home( props ) {
     
     // set up states & variables
-    const { userID, setUserID, isLoading, setIsLoading, setUserInfo, setIsLoggedIn } = props;
+    const { saveUser } = props;
     const [ loginUser, setLoginUser ] = useState(null);
     const [ loginPass, setLoginPass ] = useState(null);
     const [ modalDiv, setModalDiv ] = useState(null);
+    const [ isLoading, setIsLoading ] = useState(false);
     // const loginError = useRef(0);  ---------> (I don't think I need this anymore)
     const registerUser = useRef(0);
     const navigate = useNavigate();
-    
+        
     // functions to handle modal fade-in and fade-out
     const openModal = (divRef) => {
         setModalDiv(divRef);
@@ -44,7 +45,6 @@ export default function Home( props ) {
 
     // function to handle login and set user and isLoggedIn
     const handleLogin = async (e) => {
-        // prevent reload
         e.preventDefault();
         setIsLoading(true);
 
@@ -60,19 +60,17 @@ export default function Home( props ) {
                 },
                 body: JSON.stringify({ username: loginUser, password: loginPass })
             });
+            data = await response.json();
             if (response.ok) {
                 // handle successful login
-                data = await response.json();
-                setUserID(data.id);
-                setUserInfo(data);
-                setIsLoggedIn(true);
+                saveUser(data);
                 navigate(`/${data.id}/lists`);
             } else {
                 // handle error response
                 toast.error("Oops! Incorrect Username or Password. Please try again.");
             }
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error);
         } finally {
             setIsLoading(false);
         }

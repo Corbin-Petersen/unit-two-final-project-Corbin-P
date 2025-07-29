@@ -1,19 +1,18 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router";
 import NewList from "../components/NewList";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
-import { AppContext } from "../context/AppContext";
 import { toast } from "react-toastify";
 
 export default function Lists( props ) {
     // pull in params and set variables
-    const { userID, listID } = useParams();
-    const { userInfo, userData, isLoggedIn } = props;
+    const { userID } = useParams();
+    const { userInfo, isLoggedIn, saveUserLists } = props;
     const [ isVisible, setIsVisible ] = useState(false);
     const [ hasLists, setHasLists ] = useState(true);
-    const [ userLists, setUserLists ] = useState([]);
+    const [ lists, setLists ] = useState([]);
     const newListRef = useRef(0);
     const deleteListRef = useRef(0);
     
@@ -22,34 +21,49 @@ export default function Lists( props ) {
         let response;
         let data;
         try {
-            response = await fetch(`http://localhost:8080/api/${userID}/lists`);
+            response = await fetch(`http://localhost:8080/api/${userID}/lists`, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             data = await response.json();
-            setUserLists(data);
+            if (!response.ok) {
+                throw new Error("Failed to fetch lists");
+            }
+            saveUserLists(data);
+            setLists(data);
         } catch (error) {
             toast.error(error.response.data.message);
         }
     }
     useEffect(() => {
         getUserLists();
-        userLists.length < 1 && setHasLists(false);
     }, []);
+    useEffect(() => {
+        lists.length < 1 ? setHasLists(false) : setHasLists(true);
+    }, [lists]);
 
     // function to delete lists
     const deleteList = async () => {
         // capture indexes of current item, listItems, and userInfo
-        const listIndex = userLists.findIndex((i) => i.listID === listID);
+        const listIndex = lists.findIndex((i) => i.id === listID);
         let response;
 
         try {
             response = await fetch(`http://localhost:8080/api/${userID}/lists/${listIndex}/delete`, {
                 method: 'DELETE',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
             if (response.status === 204) {
                 // remove list from userLists state
-                setUserLists((lists) => lists.filter((list, index) => index !== listIndex));
+                let updateList = (lists) => lists.filter((list, index) => index !== listIndex);
+                setLists(updateList);
+                saveState(updateList);
                 toast.success("List deleted successfully!");
             } 
         } catch (error) {
@@ -80,7 +94,7 @@ export default function Lists( props ) {
     }
 
     
-    let theseLists =  userLists.map(list => list.listItems.length)
+    let theseLists =  lists.map(list => list.listItems.length)
     
 
     return (
@@ -93,13 +107,13 @@ export default function Lists( props ) {
                     <h3>YOUR LISTS</h3>
                     <button id="new-list-btn" className="square" title="new list" onClick={() => handlePopup(newListRef)}><i className="fa-solid fa-plus"></i></button>
                 </div>
-            {hasLists ? userLists.map(list => (
-                <div key={list.listID} className="list-block row" id={list.listID}>
-                    <Link to={list.listID} className="no-decorate row grow" >
-                        <img src={list.listItems.length === 0 ? "/default-img.png" : list.listItems[0].itemImg} className="img-small" />
+            {hasLists ? lists.map(list => (
+                <div key={list.id} className="list-block row" id={list.id}>
+                    <Link to={list.id} className="no-decorate row grow" >
+                        <img src={list.items.length === 0 ? "/default-img.png" : list.items[0].itemImg} className="img-small" />
                         <div className="list-block-text grow">
-                            <h4>{list.listName}</h4>
-                            <p>{!list.listItems ? "0" : list.listItems.length} {list.listItems.length === 1 ? "Item" : "Items"}</p>
+                            <h4>{list.name}</h4>
+                            <p>{!list.items ? "0" : list.items.length} {list.items.length === 1 ? "Item" : "Items"}</p>
                         </div>
                     </Link>
                     <button className="delete-list square-bg" onClick={() => handlePopup(deleteListRef)}><i className="fa-solid fa-trash-can"></i></button>
@@ -112,7 +126,7 @@ export default function Lists( props ) {
             )}
             </div>
             <div className="modal-bg" ref={newListRef}>
-                <NewList data={data} handlePopup={handlePopup} userInfo={userInfo} newListRef={newListRef} />
+                <NewList handlePopup={handlePopup} userInfo={userInfo} newListRef={newListRef} />
             </div>
             <div className="modal-bg" ref={deleteListRef}>
                 <div className="modal confirm-delete" >

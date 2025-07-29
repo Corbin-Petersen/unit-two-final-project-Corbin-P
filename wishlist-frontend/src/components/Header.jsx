@@ -1,15 +1,10 @@
 import { NavLink, useParams } from "react-router";
-import { useContext, useState } from "react";
-import { AppContext } from "../context/AppContext";
+import { useState } from "react";
 
 export default function Header( props ) {
     const [ menuOpen, setMenuOpen ] = useState(false);
-    const { data, loggedIn } = props;
+    const { userId, isLoggedIn, setIsLoggedIn } = props;
     // const { listID } = useParams();
-    const { 
-        userId, setUserId,
-        isLoggedIn, setIsLoggedIn 
-    } = useContext(AppContext);
     
     // const userInfo = data.find(user => user.userID == userID);
 

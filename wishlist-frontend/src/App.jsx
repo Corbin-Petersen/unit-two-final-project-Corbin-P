@@ -15,17 +15,27 @@ export const AppContext = createContext();
 function App() {
   const [ loggedIn, setLoggedIn ] = useState(null);
   const [ isLoggedIn, setIsLoggedIn ] = useState(false);
-  // const [ userData, setUserData ] = useState(false);
   const [ userID, setUserID ] = useState(null);
-  const [ isLoading, setIsLoading ] = useState(false);
   const [ userInfo, setUserInfo ] = useState(null);
+  const [ userLists, setUserLists ] = useState([]);
+
   const contextValue = {
     isLoggedIn, setIsLoggedIn,
-    userData, setUserData,
     userID, setUserID,
-    isLoading, setIsLoading,
     userInfo, setUserInfo
   }
+
+  // callback from Home
+  const saveUser = async (x) => {
+    setUserID(x.id);
+    setUserInfo(x);
+    setIsLoggedIn(true);
+  }
+  // callback from Lists
+  const saveUserLists = async (x) => {
+    setUserLists(x);
+  }
+
   
   // send dummy data to local storage
   // const data = JSON.parse(localStorage.getItem('fakeData'));
@@ -54,29 +64,25 @@ function App() {
   return (
     <AppContext.Provider value={contextValue}>
       <ToastContainer />
-      <Header loggedIn={loggedIn} setLoggedIn={setLoggedIn} data={data} />
+      <Header userID={userID} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         <Routes>
-          <Route path="/" element={
-            <Home 
-              userID={userID} 
-              setUserID={setUserID} 
-              userInfo={userInfo}
-              setUserInfo={setUserInfo}
-              isLoggedIn={isLoggedIn}
-              setIsLoggedIn={setIsLoggedIn} />
-          } />
+          <Route path="/" element={<Home saveUser={saveUser} />} />
           <Route path=":userID">
             <Route path="lists">
-              <Route index element={<Lists userID={userID} userInfo={userInfo} isLoggedIn={isLoggedIn} />} />
-              <Route path=":listID">
-                <Route index element={<ViewList data={data} c={loggedIn} setLoggedIn={setLoggedIn} />} />
-                <Route path=":itemID" element={<Item data={data} />} />
-                <Route path="new" element={<NewItem />} />
-              </Route>
-              <Route path="new" element={<NewList data={data} />} />
+              <Route index element={
+                <Lists 
+                  userID={userID} 
+                  userInfo={userInfo} 
+                  isLoggedIn={isLoggedIn} 
+                  saveUserLists={saveUserLists}
+                />
+              } />
+              <Route path=":listID" element={
+                <ViewList userInfo={userInfo} userLists={userLists} isLoggedIn={isLoggedIn} />
+              } />
             </Route>
             <Route path="shared">
-              <Route path=":sharedID" element={<ShareList data={data} />} />
+              <Route path=":sharedID" element={<ShareList userInfo={userInfo} userLists={userLists} />} />
             </Route>
           </Route>
         </Routes>

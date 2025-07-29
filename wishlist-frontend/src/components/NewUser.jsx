@@ -57,16 +57,16 @@ export default function NewUser( props ) {
             <form name="registration-form" id="register" className="col" method="post" onSubmit={registerUser}>
                 <h3>USER DETAILS</h3>
                 <label>FIRST NAME
-                    <input type="text" id="login-user" name="firstName" placeholder="First Name" onChange={handleChange} />
+                    <input type="text" id="new-fname" name="firstName" placeholder="First Name" onChange={handleChange} />
                 </label>
                 <label>LAST NAME
-                    <input type="text" id="login-user" name="lastName" placeholder="Last Name" onChange={handleChange} />
+                    <input type="text" id="new-lname" name="lastName" placeholder="Last Name" onChange={handleChange} />
                 </label>
                 <label>EMAIL
-                    <input type="email" id="login-user" name="email" placeholder="valid@email.com" onChange={handleChange} />
+                    <input type="email" id="new-email" name="email" placeholder="valid@email.com" onChange={handleChange} />
                 </label>
                 <label>PASSWORD
-                    <input type="password" id="login-pass" name="password" autoComplete="set password" onChange={handleChange} />
+                    <input type="password" id="new-pass" name="password" autoComplete="set password" onChange={handleChange} />
                 </label>
                 <button className="submit-btn">REGISTER</button>
             </form>        
