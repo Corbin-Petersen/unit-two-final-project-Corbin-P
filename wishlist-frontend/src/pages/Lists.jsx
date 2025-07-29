@@ -1,24 +1,61 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router";
 import NewList from "../components/NewList";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
+import { AppContext } from "../context/AppContext";
+import { toast } from "react-toastify";
 
 export default function Lists( props ) {
     // pull in params and set variables
     const { userID, listID } = useParams();
     const { data, loggedIn, setLoggedIn } = props;
-    const newListRef = useRef(0);
-    const deleteListRef = useRef(0);
+    const {
+        isLoggedIn, setIsLoggedIn,
+        userData, setUserData,
+        setUserID,
+        isLoading, setIsLoading,
+        userInfo, setUserInfo
+    } = useContext(AppContext);
     const [ isVisible, setIsVisible ] = useState(false);
     const [ hasLists, setHasLists ] = useState(true);
+    const [ userLists, setUserLists ] = useState([]);
+    const newListRef = useRef(0);
+    const deleteListRef = useRef(0);
     
-    const userInfo = data.find(user => user.userID == userID);
-
+    // fetch user lists
+    const getUserLists = async () => {
+        let response;
+        let data;
+        try {
+            response = await fetch(`http://localhost:8080/api/${userID}/lists`);
+            data = await response.json();
+            setUserLists(data);
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    }
     useEffect(() => {
-        userInfo.lists.length < 1 && setHasLists(false);
+        getUserLists();
+        userLists.length < 1 && setHasLists(false);
     }, []);
+
+    // function to delete lists
+    const deleteList = async () => {
+        
+        // capture indexes of current item, listItems, and userInfo
+        const listIndex = userLists.findIndex((i) => i.listID === listID);
+        const userIndex = data.findIndex((i) => i.userID === userInfo.userID);
+
+        // remove item from userList inside userInfo inside data
+        data[userIndex].lists.splice(listIndex, 1);
+
+        // update localStorage
+        localStorage.setItem('fakeData', JSON.stringify(data));
+
+        handlePopup(deleteListRef);
+    }
     
     // functions to handle modals
     const handlePopup = (refs) => {
@@ -40,24 +77,8 @@ export default function Lists( props ) {
         setIsVisible(!isVisible);
     }
 
-    // function to delete lists
-        const deleteList = () => {
-        
-        // capture indexes of current item, listItems, and userInfo
-        const listIndex = userInfo.lists.findIndex((i) => i.listID === listID);
-        const userIndex = data.findIndex((i) => i.userID === userInfo.userID);
-
-        // remove item from userList inside userInfo inside data
-        data[userIndex].lists.splice(listIndex, 1);
-
-        // update localStorage
-        localStorage.setItem('fakeData', JSON.stringify(data));
-
-        handlePopup(deleteListRef);
-    }
-    let theseLists =  userInfo.lists.map(list => 
-    list.listItems.length
-    )
+    
+    let theseLists =  userLists.map(list => list.listItems.length)
     
 
     return (
@@ -70,7 +91,7 @@ export default function Lists( props ) {
                     <h3>YOUR LISTS</h3>
                     <button id="new-list-btn" className="square" title="new list" onClick={() => handlePopup(newListRef)}><i className="fa-solid fa-plus"></i></button>
                 </div>
-            {hasLists ? userInfo.lists.map(list => (
+            {hasLists ? userLists.map(list => (
                 <div key={list.listID} className="list-block row" id={list.listID}>
                     <Link to={list.listID} className="no-decorate row grow" >
                         <img src={list.listItems.length === 0 ? "/default-img.png" : list.listItems[0].itemImg} className="img-small" />

@@ -1,8 +1,9 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
 import { useNavigate } from "react-router";
+import { toast } from 'react-toastify';
+import { AppContext } from "../context/AppContext";
 import Error from "../components/Error";
 import NewUser from "../components/NewUser";
-import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 
@@ -12,17 +13,24 @@ export default function Home( props ) {
     const { loggedIn, setLoggedIn, data } = props;
     const [ loginUser, setLoginUser ] = useState(null);
     const [ loginPass, setLoginPass ] = useState(null);
-    const [ isLoading, setIsLoading ] = useState(false);
     const [ modalDiv, setModalDiv ] = useState(null);
     // const loginError = useRef(0);  ---------> (I don't think I need this anymore)
     const registerUser = useRef(0);
     const navigate = useNavigate();
+    const {
+        isLoggedIn, setIsLoggedIn,
+        userData, setUserData,
+        userID, setUserID,
+        isLoading, setIsLoading,
+        userInfo, setUserInfo
+    } = useContext(AppContext);
     
     // functions to handle modal fade-in and fade-out
-    const openModal = (modalDiv) => {
-        modalDiv.current.style.display = "flex";
+    const openModal = (divRef) => {
+        setModalDiv(divRef);
+        divRef.current.style.display = "flex";
         setTimeout(() => {
-            modalDiv.current.style.opacity = "1";
+            divRef.current.style.opacity = "1";
         }, 1);
     }
     const closeModal = () => {
@@ -62,8 +70,9 @@ export default function Home( props ) {
             });
             if (response.ok) {
                 // handle successful login
-                const data = await response.json();
-                setUserId(data.id);
+                data = await response.json();
+                setUserID(data.id);
+                setUserInfo(data);
                 navigate(`/${data.id}/lists`);
             } else {
                 // handle error response
@@ -71,8 +80,9 @@ export default function Home( props ) {
             }
         } catch (error) {
             toast.error(error.response.data.message);
-        }    
-        setIsLoading(false);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -96,10 +106,12 @@ export default function Home( props ) {
                     <label>PASSWORD
                         <input type="password" id="login-pass" name="loginPass" autoComplete="current password" onChange={setPass} />
                     </label>
-                    <button type="submit">LOGIN</button>
+                    <button type="submit" disabled={isLoading}>
+                        {isLoading ? "LOADING..." : "LOGIN"}
+                    </button>
                 </form>
                 <div>
-                    <p>Don't have an account? <span className="emphasis" onClick={() => navigate("/signup")}>Sign up here!</span></p>
+                    <p>Don't have an account? <span className="emphasis" style={{cursor: "pointer"}} onClick={() => openModal(registerUser)}>Sign up here!</span></p>
                 </div>
                 {/* ---------> (I don't think I need this anymore)
                 <div id="modal-error" className="modal-bg" ref={loginError}>
@@ -107,7 +119,7 @@ export default function Home( props ) {
                 </div> 
                 */}
                 <div className="modal-bg" ref={registerUser}>
-                    <NewUser closeModal={closeModal} />
+                    <NewUser closeModal={closeModal} modalDiv={modalDiv} />
                 </div>
             </div>
         </div>

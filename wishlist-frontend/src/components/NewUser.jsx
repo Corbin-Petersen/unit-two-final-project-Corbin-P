@@ -2,7 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 export default function NewUser( props ) {
-    const { closeModal } = props;
+    const { closeModal, modalDiv } = props;
     const [ newUser, setNewUser ] = useState({
         firstName: "",
         lastName: "",
@@ -54,7 +54,7 @@ export default function NewUser( props ) {
             <div id="">
                 <h2>Sign up to get started!</h2>
             </div>
-            <form name="registration-form" id="register" method="post" onSubmit={registerUser}>
+            <form name="registration-form" id="register" className="col" method="post" onSubmit={registerUser}>
                 <h3>USER DETAILS</h3>
                 <label>FIRST NAME
                     <input type="text" id="login-user" name="firstName" placeholder="First Name" onChange={handleChange} />
@@ -68,7 +68,7 @@ export default function NewUser( props ) {
                 <label>PASSWORD
                     <input type="password" id="login-pass" name="password" autoComplete="set password" onChange={handleChange} />
                 </label>
-                <button type="submit">REGISTER</button>
+                <button className="submit-btn">REGISTER</button>
             </form>        
         </div>
     );

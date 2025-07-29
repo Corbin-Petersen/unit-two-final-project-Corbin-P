@@ -1,11 +1,17 @@
 import { NavLink, useParams } from "react-router";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AppContext } from "../context/AppContext";
 
 export default function Header( props ) {
-    const { data, loggedIn } = props;
-    const { userID, listID } = useParams();
     const [ menuOpen, setMenuOpen ] = useState(false);
-    const userInfo = data.find(user => user.userID == userID);
+    const { data, loggedIn } = props;
+    // const { listID } = useParams();
+    const { 
+        userId, setUserId,
+        isLoggedIn, setIsLoggedIn 
+    } = useContext(AppContext);
+    
+    // const userInfo = data.find(user => user.userID == userID);
 
     const handleMenu = (e) => {
         e.preventDefault();
@@ -23,7 +29,7 @@ export default function Header( props ) {
                     <div className="menu" onClick={handleMenu}>
                         <i className="fa-solid fa-bars"></i>
                     </div>
-                    {!loggedIn ? (
+                    {!isLoggedIn ? (
                     <ul className={ menuOpen ? "open" : "" }>
                         <li>
                             <NavLink to="/" >HOME</NavLink>
@@ -32,7 +38,7 @@ export default function Header( props ) {
                     ) : (
                     <ul className={ menuOpen ? "open" : "" }>
                         <li>
-                            <NavLink to={`${loggedIn}/lists`} onClick={handleSubMenu} end>MY LISTS</NavLink>
+                            <NavLink to={`${userId}/lists`} onClick={handleSubMenu} end>MY LISTS</NavLink>
                         </li>
                         <li>
                             <NavLink to="/" onClick={handleSubMenu} reloadDocument end>LOGOUT</NavLink>

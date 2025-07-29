@@ -1,16 +1,21 @@
-import { useEffect, useRef, useState, Fragment } from "react";
+import { useEffect, useRef, useState, Fragment, useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import NewItem from "../components/NewItem";
 import Item from "../components/Item";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import { AppContext } from "../context/AppContext";
 
 export default function ViewList( props ) {
     // pull in params and set variables
     const { userID, listID } = useParams();
     const { data } = props;
-    const userInfo = data.find(user => user.userID == userID);
-    const userList = userInfo.lists.find(list => list.listID == listID);
+    const {
+        isLoggedIn, setIsLoggedIn,
+        userData, setUserData,
+        setUserID,
+        isLoading, setIsLoading
+    } = useContext(AppContext);
     const newItemModal = useRef(null);
     const viewItemModal = useRef(null);
     const [ isVisible, setIsVisible ] = useState(false);
@@ -18,7 +23,10 @@ export default function ViewList( props ) {
     const [ thisItem, setThisItem ] = useState(null);
     const [ copied, setCopied ] = useState(false);
     const navigate = useNavigate();
-    
+        
+    // const userInfo = data.find(user => user.userID == userID);
+
+   
     useEffect(() => {
         userList.listItems.length < 1 && setHasItems(false);
     }, []);
