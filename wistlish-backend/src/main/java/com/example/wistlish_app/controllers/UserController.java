@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 
-@CrossOrigin(origins = "http://localhost:5173", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class UserController {
