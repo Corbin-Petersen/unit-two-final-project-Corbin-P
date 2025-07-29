@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { Route, Routes } from "react-router";
 import { Footer, Header, Item, NavBlock, NewItem, NewList, ShareItem } from './components/exports';
 import { Home, Lists, ViewList, ShareList } from './pages/exports';
@@ -7,14 +7,25 @@ import presetData from './data/userData.json';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
-import { AppContext } from './context/AppContext';
 
 library.add(fas);
 
+export const AppContext = createContext();
+
 function App() {
   const [ loggedIn, setLoggedIn ] = useState(null);
-  const { userId, setUserId } = useContext(AppContext);
-  const data = "";
+  const [ isLoggedIn, setIsLoggedIn ] = useState(false);
+  // const [ userData, setUserData ] = useState(false);
+  const [ userID, setUserID ] = useState(null);
+  const [ isLoading, setIsLoading ] = useState(false);
+  const [ userInfo, setUserInfo ] = useState(null);
+  const contextValue = {
+    isLoggedIn, setIsLoggedIn,
+    userData, setUserData,
+    userID, setUserID,
+    isLoading, setIsLoading,
+    userInfo, setUserInfo
+  }
   
   // send dummy data to local storage
   // const data = JSON.parse(localStorage.getItem('fakeData'));
@@ -41,14 +52,22 @@ function App() {
   // }
     
   return (
-    <>
+    <AppContext.Provider value={contextValue}>
       <ToastContainer />
       <Header loggedIn={loggedIn} setLoggedIn={setLoggedIn} data={data} />
         <Routes>
-          <Route path="/" element={<Home loggedIn={loggedIn} setLoggedIn={setLoggedIn} data={data} />} />
+          <Route path="/" element={
+            <Home 
+              userID={userID} 
+              setUserID={setUserID} 
+              userInfo={userInfo}
+              setUserInfo={setUserInfo}
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn} />
+          } />
           <Route path=":userID">
             <Route path="lists">
-              <Route index element={<Lists data={data} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+              <Route index element={<Lists userID={userID} userInfo={userInfo} isLoggedIn={isLoggedIn} />} />
               <Route path=":listID">
                 <Route index element={<ViewList data={data} c={loggedIn} setLoggedIn={setLoggedIn} />} />
                 <Route path=":itemID" element={<Item data={data} />} />
@@ -62,7 +81,7 @@ function App() {
           </Route>
         </Routes>
       <Footer />
-    </>
+    </AppContext.Provider>
   )
 }
 
