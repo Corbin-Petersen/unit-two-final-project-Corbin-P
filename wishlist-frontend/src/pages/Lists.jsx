@@ -38,6 +38,7 @@ export default function Lists( props ) {
             toast.error(error.response.data.message);
         }
     }
+    
     useEffect(() => {
         getUserLists();
     }, []);
@@ -63,7 +64,7 @@ export default function Lists( props ) {
                 // remove list from userLists state
                 let updateList = (lists) => lists.filter((list, index) => index !== listIndex);
                 setLists(updateList);
-                saveState(updateList);
+                saveUserLists(updateList);
                 toast.success("List deleted successfully!");
             } 
         } catch (error) {
@@ -92,10 +93,6 @@ export default function Lists( props ) {
         );
         setIsVisible(!isVisible);
     }
-
-    
-    let theseLists =  lists.map(list => list.listItems.length)
-    
 
     return (
         <div className="component col">
