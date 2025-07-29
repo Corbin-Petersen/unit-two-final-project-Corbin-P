@@ -10,14 +10,7 @@ import { toast } from "react-toastify";
 export default function Lists( props ) {
     // pull in params and set variables
     const { userID, listID } = useParams();
-    const { data, loggedIn, setLoggedIn } = props;
-    const {
-        isLoggedIn, setIsLoggedIn,
-        userData, setUserData,
-        setUserID,
-        isLoading, setIsLoading,
-        userInfo, setUserInfo
-    } = useContext(AppContext);
+    const { userInfo, userData, isLoggedIn } = props;
     const [ isVisible, setIsVisible ] = useState(false);
     const [ hasLists, setHasLists ] = useState(true);
     const [ userLists, setUserLists ] = useState([]);
@@ -43,16 +36,25 @@ export default function Lists( props ) {
 
     // function to delete lists
     const deleteList = async () => {
-        
         // capture indexes of current item, listItems, and userInfo
         const listIndex = userLists.findIndex((i) => i.listID === listID);
-        const userIndex = data.findIndex((i) => i.userID === userInfo.userID);
+        let response;
 
-        // remove item from userList inside userInfo inside data
-        data[userIndex].lists.splice(listIndex, 1);
-
-        // update localStorage
-        localStorage.setItem('fakeData', JSON.stringify(data));
+        try {
+            response = await fetch(`http://localhost:8080/api/${userID}/lists/${listIndex}/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.status === 204) {
+                // remove list from userLists state
+                setUserLists((lists) => lists.filter((list, index) => index !== listIndex));
+                toast.success("List deleted successfully!");
+            } 
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
 
         handlePopup(deleteListRef);
     }

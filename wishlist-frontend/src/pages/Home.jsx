@@ -1,7 +1,6 @@
 import { useRef, useState, useContext } from "react";
 import { useNavigate } from "react-router";
 import { toast } from 'react-toastify';
-import { AppContext } from "../context/AppContext";
 import Error from "../components/Error";
 import NewUser from "../components/NewUser";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,20 +9,13 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 export default function Home( props ) {
     
     // set up states & variables
-    const { loggedIn, setLoggedIn, data } = props;
+    const { userID, setUserID, isLoading, setIsLoading, setUserInfo, setIsLoggedIn } = props;
     const [ loginUser, setLoginUser ] = useState(null);
     const [ loginPass, setLoginPass ] = useState(null);
     const [ modalDiv, setModalDiv ] = useState(null);
     // const loginError = useRef(0);  ---------> (I don't think I need this anymore)
     const registerUser = useRef(0);
     const navigate = useNavigate();
-    const {
-        isLoggedIn, setIsLoggedIn,
-        userData, setUserData,
-        userID, setUserID,
-        isLoading, setIsLoading,
-        userInfo, setUserInfo
-    } = useContext(AppContext);
     
     // functions to handle modal fade-in and fade-out
     const openModal = (divRef) => {
@@ -73,6 +65,7 @@ export default function Home( props ) {
                 data = await response.json();
                 setUserID(data.id);
                 setUserInfo(data);
+                setIsLoggedIn(true);
                 navigate(`/${data.id}/lists`);
             } else {
                 // handle error response
