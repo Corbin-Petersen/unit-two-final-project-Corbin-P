@@ -66,7 +66,7 @@ function App() {
   return (
     <AppContext.Provider value={contextValue}>
       <ToastContainer />
-      <Header userID={userID} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      <Header userInfo={userInfo} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         <Routes>
           <Route path="/" element={<Home saveUser={saveUser} />} />
           <Route path=":userID">
