@@ -9,7 +9,7 @@ export default function Item( props ) {
     // get params, refs, states, & props
     const confirmDialog = useRef(null);
     const [ confirmOpen, setConfirmOpen ] = useState(false);
-    const { item, handleModal, thisItem, getThisList } = props;
+    const { userList, item, handleModal, thisItem, getThisList } = props;
 
     // function to handle confirm popup
     const handleConfirm = () => {
@@ -42,6 +42,7 @@ export default function Item( props ) {
             if (response.status !== 204) {
                 throw new Error("Failed to delete item");
             }
+            let updateList = (list) => list.filter((item, index) => index !== listIndex);
             toast.success("Item deleted successfully");
         } catch (error) {
             console.error(error.message);

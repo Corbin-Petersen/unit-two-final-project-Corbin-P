@@ -68,7 +68,7 @@ export default function Home( props ) {
                 navigate(`/${data.id}/lists`);
             } else {
                 // handle error response
-                toast.error("Oops! Incorrect Username or Password. Please try again.");
+                toast.error("Oops! Incorrect Username or Password. Please try again.", { theme: "colored" });
             }
         } catch (error) {
             toast.error(error);
