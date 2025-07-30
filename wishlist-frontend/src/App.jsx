@@ -36,30 +36,18 @@ function App() {
     setUserLists(x);
   }
 
-  
-  // send dummy data to local storage
-  // const data = JSON.parse(localStorage.getItem('fakeData'));
-  // !data && localStorage.setItem('fakeData', JSON.stringify(presetData));
+  // check for cookie and set userID if exists
+  const getCurrentUser = async (currentID) => {
+    const response = await fetch(`http://localhost:8080/api/auth/${currentID}`, {
+      credentials: 'include'
+    });
 
-  // fetch Users
-  // const fetchLists = async () => {
-  //   let lists = [];
-  //   let response;
-  //   let data;
-  //   try {
-  //     response = await fetch(`http://localhost:8080/api/${userId}/lists`);
-  //     data = await response.json();
-  //   } catch (error) {
-  //     console.error("Error fetching users:", error);
-  //     // TODO: maybe use state variable to handle error state
-  //   }
-  //   return users.map(user => ({
-  //     userID: user.id,
-  //     name: user.name,
-  //     email: user.email,
-  //     lists: []
-  //   }));
-  // }
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      setUserInfo(data); 
+    } 
+  };
     
   return (
     <AppContext.Provider value={contextValue}>
@@ -75,11 +63,10 @@ function App() {
                   userInfo={userInfo} 
                   isLoggedIn={isLoggedIn} 
                   saveUserLists={saveUserLists}
+                  getCurrentUser={getCurrentUser}
                 />
               } />
-              <Route path=":listID" element={
-                <ViewList userInfo={userInfo} userLists={userLists} isLoggedIn={isLoggedIn} />
-              } />
+              <Route path=":listID" element={<ViewList userInfo={userInfo} userLists={userLists} isLoggedIn={isLoggedIn} />} />
             </Route>
             <Route path="shared">
               <Route path=":sharedID" element={<ShareList userInfo={userInfo} userLists={userLists} />} />

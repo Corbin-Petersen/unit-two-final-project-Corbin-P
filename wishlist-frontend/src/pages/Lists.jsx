@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 export default function Lists( props ) {
     // pull in params and set variables
     const { userID } = useParams();
-    const { userInfo, isLoggedIn, saveUserLists } = props;
+    const { userInfo, isLoggedIn, saveUserLists, getCurrentUser } = props;
     const [ isVisible, setIsVisible ] = useState(false);
     const [ hasLists, setHasLists ] = useState(true);
     const [ lists, setLists ] = useState([]);
@@ -38,10 +38,13 @@ export default function Lists( props ) {
             toast.error(error.response.data.message);
         }
     }
-    
+
+    useEffect(() => {
+        getCurrentUser(userID);
+    }, [userInfo]);
     useEffect(() => {
         getUserLists();
-    }, []);
+    }, [userID]);
     useEffect(() => {
         lists.length < 1 ? setHasLists(false) : setHasLists(true);
     }, [lists]);

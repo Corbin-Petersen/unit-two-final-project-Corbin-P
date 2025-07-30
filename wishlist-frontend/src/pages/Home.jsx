@@ -61,9 +61,10 @@ export default function Home( props ) {
                 },
                 body: JSON.stringify({ username: loginUser, password: loginPass })
             });
-            data = await response.json();
             if (response.ok) {
                 // handle successful login
+                data = await response.json();
+                console.log(data);
                 saveUser(data);
                 navigate(`/${data.id}/lists`);
             } else {
