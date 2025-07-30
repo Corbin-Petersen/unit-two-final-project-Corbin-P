@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState, Fragment } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import NewItem from "../components/NewItem";
+import ListItem from "../components/ListItem";
 import Item from "../components/Item";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { toast } from "react-toastify";
-import ListItem from "../components/ListItem";
 
 export default function ViewList( props ) {
     // pull in params and set variables
@@ -160,20 +160,14 @@ export default function ViewList( props ) {
                 <div className="list-display row">
                     { hasItems ? list.items.map(item => (
                     <Fragment key={`${item.id}`}>
-                        <div id={`${item.id}`} className="item col" onClick={(e) => handleModal(e.currentTarget.nextElementSibling)} style={{pointerEvents: isVisible ? "none" : "auto"}}>
-                            <div className="item-block-img" style={{backgroundImage: item.imageUrl == "" ? "/src/assets/default-img.png" : `url(${item.imageUrl})`}}>
-                            {item.quantity > 1 && 
-                                <p className="list-need">QUANTITY: <span className="list-need-num">{item.quantity}</span></p>
-                            }
-                            </div>
-                            <div className="item-block-text">
-                                <h4>{item.name}</h4>
-                                <p className="price">${item.cost}</p>
-                            </div>
-                        </div>
-                        <div id={`${item.id}-view`} className="modal-bg" >
-                            <Item userInfo={userInfo} list={list} item={item} handleModal={handleModal} viewItemModal={viewItemModal} thisItem={thisItem} setThisItem={setThisItem} />
-                        </div>
+                        <ListItem 
+                            userList={list} 
+                            item={item} 
+                            handleModal={handleModal} 
+                            isVisible={isVisible} 
+                            thisItem={thisItem}
+                            getThisList={getThisList}
+                        />
                     </Fragment>
                     )) : (
                         <div id="no-items" className="col">
