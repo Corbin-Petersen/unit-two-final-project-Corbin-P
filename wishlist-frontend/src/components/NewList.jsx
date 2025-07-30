@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 
@@ -11,9 +11,13 @@ export default function NewList( props ) {
         name: "",
         description: "",
         useClaimed: false,
-        userID: userID
+        userId: userID
     });
     const navigate = useNavigate();
+
+    useEffect(() => {
+        console.log(userID);
+    }, []);
 
     // set input handlers
     const handleChange = (e) => {
@@ -30,7 +34,7 @@ export default function NewList( props ) {
             name: "",
             description: "",
             useClaimed: false,
-            userID: userID
+            userId: userID
         });
         handlePopup(ref);
     }
@@ -39,7 +43,7 @@ export default function NewList( props ) {
     const submitNewList = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:8080/api/${userID}lists`, {
+            const response = await fetch(`http://localhost:8080/api/${userID}/lists/add`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
