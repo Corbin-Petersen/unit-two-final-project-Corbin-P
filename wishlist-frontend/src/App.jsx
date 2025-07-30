@@ -38,16 +38,30 @@ function App() {
 
   // check for cookie and set userID if exists
   const getCurrentUser = async (currentID) => {
-    const response = await fetch(`http://localhost:8080/api/auth/${currentID}`, {
-      credentials: 'include'
+    let response;
+    let data;
+    
+    response = await fetch(`http://localhost:8080/api/auth/${currentID}`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
-
     if (response.ok) {
-      const data = await response.json();
+      data = await response.json();
       console.log(data);
-      setUserInfo(data); 
+      saveUser(data); 
     } 
   };
+
+  const setCurrentUser = async () => {
+    const res = await fetch(`http://localhost:8080/api/profile`, {
+      credentials: 'include'
+    });
+    const data = await res.json();
+    setUserInfo(data);
+  }
     
   return (
     <AppContext.Provider value={contextValue}>
@@ -64,9 +78,10 @@ function App() {
                   isLoggedIn={isLoggedIn} 
                   saveUserLists={saveUserLists}
                   getCurrentUser={getCurrentUser}
+                  setCurrentUser={setCurrentUser}
                 />
               } />
-              <Route path=":listID" element={<ViewList userInfo={userInfo} userLists={userLists} isLoggedIn={isLoggedIn} />} />
+              <Route path=":listID" element={<ViewList userID={userID} userInfo={userInfo} userLists={userLists} isLoggedIn={isLoggedIn} />} />
             </Route>
             <Route path="shared">
               <Route path=":sharedID" element={<ShareList userInfo={userInfo} userLists={userLists} />} />

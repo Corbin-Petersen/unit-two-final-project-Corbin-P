@@ -75,12 +75,12 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public User getProfile(@CurrentSecurityContext(expression = "authentication?.name") String email) {
+    public AuthResponse getProfile(@CurrentSecurityContext(expression = "authentication?.name") String email) {
         User existingUser = userService.findByEmail(email);
         if (existingUser == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        return existingUser;
+        return new AuthResponse(existingUser.getId(), existingUser.getFirstName(), existingUser.getLastName());
     }
 
     public record LoginRequest(String username, String password) {
@@ -93,16 +93,15 @@ public class UserController {
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElse(null);
-
-        if (token != null && jwtUtil.validateToken(token, userId)) {
+        User user = userService.findById(userId);
+        if (token != null && jwtUtil.validateToken(token, user.getEmail())) {
             String email = jwtUtil.extractEmail(token); // from sub
-            User user = userService.findByEmail(email);
             return ResponseEntity.ok(Map.of(
                 "id", user.getId(),
                 "firstName", user.getFirstName(),
                 "lastName", user.getLastName(),
                 "email", email
-            );
+            ));
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or missing JWT");

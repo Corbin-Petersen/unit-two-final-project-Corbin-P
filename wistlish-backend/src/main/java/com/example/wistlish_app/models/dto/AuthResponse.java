@@ -6,6 +6,12 @@ public class AuthResponse {
     private String firstName;
     private String lastName;
 
+    public AuthResponse(int id, String firstName, String lastName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public AuthResponse(int id, String firstName, String lastName, String token) {
         this.id = id;
         this.firstName = firstName;

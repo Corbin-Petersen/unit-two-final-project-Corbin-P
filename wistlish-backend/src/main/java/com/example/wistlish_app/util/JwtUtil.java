@@ -80,9 +80,9 @@ public class JwtUtil {
 //        return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
 //    }
 
-    public Boolean validateToken(String token, int userId) {
+    public Boolean validateToken(String token, String userEmail) {
         final String email = extractEmail(token);
-        User userDetails = userService.findById(userId);
+        User userDetails = userService.findByEmail(userEmail);
         return (email.equals(userDetails.getEmail()) && !isTokenExpired(token));
     }
 

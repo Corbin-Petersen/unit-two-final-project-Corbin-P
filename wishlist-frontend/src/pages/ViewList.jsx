@@ -1,40 +1,74 @@
 import { useEffect, useRef, useState, Fragment } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import NewItem from "../components/NewItem";
 import Item from "../components/Item";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import { toast } from "react-toastify";
+import ListItem from "../components/ListItem";
 
 export default function ViewList( props ) {
     // pull in params and set variables
-    const { listID } = useParams();
-    const { userInfo, userLists, isLoggedIn } = props;
+    const { userID, listID } = useParams();
+    const { userInfo } = props;
     const newItemModal = useRef(null);
     const viewItemModal = useRef(null);
     const [ isVisible, setIsVisible ] = useState(false);
-    const [ hasItems, setHasItems ] = useState(true);
+    const [ hasItems, setHasItems ] = useState(false);
     const [ thisItem, setThisItem ] = useState(null);
     const [ copied, setCopied ] = useState(false);
     const [ list, setList ] = useState(null);
+    const [ isLoading, setIsLoading ] = useState(false);
     const navigate = useNavigate();
         
     // const userInfo = data.find(user => user.userID == userID);
-    const thisList = () => {
-        setList(userLists.find(list => list.id === listID));
+    const getThisList = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(`http://localhost:8080/api/${userID}/lists/${listID}`, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            if (response.status !== 200) {
+                throw new Error("Failed to fetch list");
+            }
+            setList(data);
+        } catch (error) {
+            console.error(error.message);
+            toast.error(error.message);
+        }
+        setIsLoading(false);
     }
-   
     useEffect(() => {
-        thisList();
-        list.length < 1 && setHasItems(false);
+        getThisList();
     }, []);
 
-    // identify if list needs an added spacer
+    useEffect(() => {
+        if (list?.items?.length > 0) {
+            setHasItems(true);
+        } else {
+            setHasItems(false);
+        }
+    }, [list]);
+        
+
+    // function to check if items need extra spacers
     const hasSpace = !hasItems ? 0 : list.items.length % 3;
 
-    const sharedID = `${listID}${Math.floor(Math.random() * 90) + 10}share`;
+    const listTotal = () => {
+        let zero = 0;
+        if (!hasItems) return zero;
+        let total = list.items.length;
+        return total;
+    }
 
     // function to total cost of all items
     const listCost = () => {
+        if (!hasItems) return "0.00";
         let total = 0;
         list.items.map(item => (
             item.quantity 
@@ -43,6 +77,27 @@ export default function ViewList( props ) {
         ));
         return total.toFixed(2);
     }    
+    
+    // function to convert list to text for simple sharing
+    const saveToText = () => {
+        if (!hasItems) return "This list is empty";
+        let text = "";
+        list.items.map((item) => {
+            text += `${item.name} - $${item.cost}: ${item.itemURL} \n \n`;
+        });
+        return text;
+    }
+    // variable to hold the text
+    const textList = saveToText();
+
+    // handle copy onclick and trigger feedback thumbs up
+    const confirmCopy = (e) => {
+        navigator.clipboard.writeText(textList);
+        setCopied(true);
+    }    
+
+    const sharedID = `${listID}${Math.floor(Math.random() * 90) + 10}share`;
+
 
     // function to handle modals
     const handleModal = (divRef) => {
@@ -64,30 +119,21 @@ export default function ViewList( props ) {
         );
         setIsVisible(!isVisible);
     }
-
-    // function to convert list to text for simple sharing
-    const saveToText = () => {
-        let text = "";
-        list.items.map((item) => {
-            text += `${item.name} - $${item.cost}: ${item.itemURL} \n \n`;
-        });
-        return text;
-    }
-    // variable to hold the text
-    const textList = saveToText();
-
-    // handle copy onclick and trigger feedback thumbs up
-    const confirmCopy = (e) => {
-        navigator.clipboard.writeText(textList);
-        
-        setCopied(true);
-    }    
     
     useEffect(() => {
         setTimeout(() => {
             setCopied(false);
         }, 1000)
     }, [copied]);
+
+    if (!list) {
+        return (
+            <div className="loading col">
+                <h2>Loading...</h2>
+                <div className="loader"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="component col">
@@ -108,7 +154,7 @@ export default function ViewList( props ) {
                     <button className="share-list-btn square" style={{pointerEvents: isVisible ? "none" : "auto"}} title="share list" ><Link to={`../../shared/${sharedID}`} target="_blank" className="no-decorate"><i className="fa-solid fa-share"></i></Link></button>
                 </div>
                 <div className="list-totals row">
-                    <span id="item-count">ITEMS: <b>{userList.listItems.length}</b></span>
+                    <span id="item-count">ITEMS: <b>{listTotal()}</b></span>
                     <span id="cost-total">TOTAL: <b>${listCost()}</b></span>
                 </div>
                 <div className="list-display row">
@@ -140,7 +186,7 @@ export default function ViewList( props ) {
                 </div>
             </div>
             <div className="modal-bg" ref={newItemModal}>
-                <NewItem data={data} userInfo={userInfo} list={list} handleModal={handleModal} setHasItems={setHasItems} newItemModal={newItemModal} />
+                <NewItem userInfo={userInfo} list={list} handleModal={handleModal} setHasItems={setHasItems} newItemModal={newItemModal} />
             </div>
         </div>
     );

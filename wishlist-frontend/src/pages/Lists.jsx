@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useParams } from "react-router-dom";
 import NewList from "../components/NewList";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -9,12 +9,17 @@ import { toast } from "react-toastify";
 export default function Lists( props ) {
     // pull in params and set variables
     const { userID } = useParams();
-    const { userInfo, isLoggedIn, saveUserLists, getCurrentUser } = props;
+    const { userInfo, isLoggedIn, saveUserLists, getCurrentUser, setCurrentUser } = props;
     const [ isVisible, setIsVisible ] = useState(false);
     const [ hasLists, setHasLists ] = useState(true);
     const [ lists, setLists ] = useState([]);
     const newListRef = useRef(0);
     const deleteListRef = useRef(0);
+
+    // if (userInfo === null) {
+    //     getCurrentUser(userID);
+    //     console.log(userInfo);
+    // }
     
     // fetch user lists
     const getUserLists = async () => {
@@ -34,18 +39,17 @@ export default function Lists( props ) {
             }
             saveUserLists(data);
             setLists(data);
+            getCurrentUser(userID)
         } catch (error) {
             toast.error(error.response.data.message);
         }
     }
 
     useEffect(() => {
-        getCurrentUser(userID);
-    }, [userInfo]);
-    useEffect(() => {
         getUserLists();
-    }, [userID]);
+    }, []);
     useEffect(() => {
+        console.log(userInfo);
         lists.length < 1 ? setHasLists(false) : setHasLists(true);
     }, [lists]);
 
@@ -109,7 +113,7 @@ export default function Lists( props ) {
                 </div>
             {hasLists ? lists.map(list => (
                 <div key={list.id} className="list-block row" id={list.id}>
-                    <Link to={list.id} className="no-decorate row grow" >
+                    <Link to={`/${userID}/lists/${list.id}`} className="no-decorate row grow" >
                         <img src={list.items.length === 0 ? "/default-img.png" : list.items[0].itemImg} className="img-small" />
                         <div className="list-block-text grow">
                             <h4>{list.name}</h4>
