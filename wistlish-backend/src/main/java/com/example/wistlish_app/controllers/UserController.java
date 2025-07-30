@@ -6,6 +6,8 @@ import com.example.wistlish_app.models.dto.UserDTO;
 import com.example.wistlish_app.repositories.UserRepository;
 import com.example.wistlish_app.service.UserService;
 import com.example.wistlish_app.util.JwtUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -20,6 +22,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -53,7 +58,7 @@ public class UserController {
             ResponseCookie cookie = ResponseCookie.from("jwt", jwtToken)
                 .httpOnly(true)
                 .path("/")
-                .maxAge(Duration.ofDays(1)) // 1 day
+                .maxAge(24 * 60 * 60) // 1 day
                 .secure(false) // Set to true if using HTTPS
 //                .sameSite("Strict")
                 .build();
@@ -79,5 +84,27 @@ public class UserController {
     }
 
     public record LoginRequest(String username, String password) {
+    }
+
+    @GetMapping(value = "/api/auth/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getCurrentUser(HttpServletRequest request, @PathVariable(value = "userId") int userId ) {
+        String token = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
+                .filter(c -> "jwt".equals(c.getName()))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElse(null);
+
+        if (token != null && jwtUtil.validateToken(token, userId)) {
+            String email = jwtUtil.extractEmail(token); // from sub
+            User user = userService.findByEmail(email);
+            return ResponseEntity.ok(Map.of(
+                "id", user.getId(),
+                "firstName", user.getFirstName(),
+                "lastName", user.getLastName(),
+                "email", email
+            );
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or missing JWT");
     }
 }

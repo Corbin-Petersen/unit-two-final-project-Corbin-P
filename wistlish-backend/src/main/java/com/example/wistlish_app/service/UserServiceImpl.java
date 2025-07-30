@@ -26,6 +26,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public User findById(int id) {
+        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
+    }
+
+    @Override
     public User saveUser(UserDTO user) {
         // Check if the user already exists
         if (userRepository.existsByEmail(user.getEmail())) {

@@ -1,10 +1,12 @@
 package com.example.wistlish_app.util;
 
 import com.example.wistlish_app.models.User;
+import com.example.wistlish_app.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,9 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
+
+    @Autowired
+    UserService userService;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -69,8 +74,16 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+//    -----original code-----
+//    public Boolean validateToken(String token, UserDetails userDetails) {
+//        final String email = extractEmail(token);
+//        return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
+//    }
+
+    public Boolean validateToken(String token, int userId) {
         final String email = extractEmail(token);
-        return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        User userDetails = userService.findById(userId);
+        return (email.equals(userDetails.getEmail()) && !isTokenExpired(token));
     }
+
 }
