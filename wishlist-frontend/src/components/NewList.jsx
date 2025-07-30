@@ -6,7 +6,7 @@ export default function NewList( props ) {
     
     // destructure props, set states and variables
     const { userID } = useParams();
-    const { data, handlePopup, userInfo, newListRef } = props;
+    const { handlePopup, userInfo, newListRef } = props;
     const [ formData, setFormData ] = useState({
         name: "",
         description: "",
@@ -23,6 +23,17 @@ export default function NewList( props ) {
             [name]: value,
         }));
     };
+
+    // clear form if modal is closed
+    const cancelAdd = (ref) => {
+        setFormData({
+            name: "",
+            description: "",
+            useClaimed: false,
+            userID: userID
+        });
+        handlePopup(ref);
+    }
 
     // submit new list to local storage
     const submitNewList = async (e) => {
@@ -52,16 +63,16 @@ export default function NewList( props ) {
 
     return (
         <div className="modal make-new col">
-            <button className="close square" onClick={() => handlePopup(newListRef.current)}><i className="fa-solid fa-xmark"></i></button>
+            <button className="close square" onClick={() => cancelAdd(newListRef.current)}><i className="fa-solid fa-xmark"></i></button>
             <div id="new-list-header">
                 <h2>Create New List</h2>
             </div>
             <form name="new-list" id="new-list" className="col" method="post" onSubmit={submitNewList}>
                 <label>LIST NAME
-                    <input type="text" id="list-name" name="listName" onChange={handleChange} autoFocus required/>
+                    <input type="text" id="list-name" name="name" value={formData.name} onChange={handleChange} autoFocus required/>
                 </label>
                 <label>DESCRIPTION
-                    <textarea id="list-info" name="listDesc" rows="5" onChange={handleChange} required />
+                    <textarea id="list-info" name="description" rows="5" value={formData.description} onChange={handleChange} required />
                 </label>
                 <button className="submit-btn">SUBMIT</button>
             </form>
