@@ -41,13 +41,13 @@ export default function NewList( props ) {
                 throw new Error("Failed to create new list");
             }
             toast.success("New list created successfully!", { theme: "colored" });
+            handlePopup(newListRef.current);
+            navigate(`/${userID}/lists/${data.id}`);
         } catch (error) {
             console.error("Error creating new list:", error);
             toast.error("Error creating a new list: \n" + error.message, { theme: "colored" });
         }
         
-        handlePopup(newListRef.current);
-        // navigate(formData.listID);
     }
 
     return (
