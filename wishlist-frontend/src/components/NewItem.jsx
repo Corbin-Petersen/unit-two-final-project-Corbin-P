@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import NewImage from "./NewImage";
 
 export default function NewItem( props ) {
     const { userInfo, list, closeModal, setHasItems, handleModal, newItemModal } = props;
@@ -23,6 +24,18 @@ export default function NewItem( props ) {
             [name]: value,
         }));
     };
+
+    const cancelAdd = (ref) => {
+        setFormData({
+            name: "",
+            cost: "",
+            itemUrl: "",
+            imageUrl: "",
+            quantity: 1,
+            listId: list.id
+        });
+        handleModal(ref);
+    }
     
     // submit new item to page
     const submitNewItem = (e) => {
@@ -33,10 +46,10 @@ export default function NewItem( props ) {
         const userIndex = data.findIndex((i) => i.userID === userInfo.userID);
 
         // add itemID to new item object
-        formInfo.itemID = `${userList.listID}-${Math.floor(Math.random() * 900) + 100}`;
+        formInfo.id = `${userList.listID}-${Math.floor(Math.random() * 900) + 100}`;
 
         // convert cost and quantity values from strings to numbers
-        formInfo.itemCost = +formInfo.itemCost;
+        formInfo.cost = +formInfo.cost;
         formInfo.quantity = +formInfo.quantity;
 
         // add new item to the list inside userInfo inside data
@@ -56,7 +69,7 @@ export default function NewItem( props ) {
 
     return (
         <div className="modal make-new col">
-            <button className="close square" onClick={() => handleModal(newItemModal.current)}><i className="fa-solid fa-xmark"></i></button>
+            <button className="close square" onClick={() => cancelAdd(newItemModal.current)}><i className="fa-solid fa-xmark"></i></button>
             <div id="new-item-header">
                 <h2>Create New Item</h2>
             </div>
@@ -67,9 +80,6 @@ export default function NewItem( props ) {
                 <label>ITEM URL
                     <input type="url" id="item-URL" name="itemUrl" value={formInfo.itemURL} onChange={handleChange} required/>
                 </label>
-                <label>IMAGE URL
-                    <input type="url" id="link-image" name="imageUrl" value={formInfo.itemImg} onChange={handleChange} />
-                </label>
                 <div id="cost-count-inputs" className="row">
                     <label className="grow">COST
                         <input type="number" step="0.01" id="cost" name="itemCost" value={formInfo.itemCost} onChange={handleChange} required/>
@@ -79,11 +89,7 @@ export default function NewItem( props ) {
                     </label>
                 </div>
                 <div id="new-image">
-                    { isLoading ? (
-                        <i class="fa-solid fa-spinner fa-spin fa-2xl" />
-                    ) : (
-                        <img src={formInfo.imageUrl == "" ? "/default-img.png" : formInfo.itemImg} className="img-new" />
-                    )}
+                    <NewImage formInfo={formInfo} setFormInfo={setFormInfo} isLoading={isLoading} setIsLoading={setIsLoading} />
                 </div>
                 <button className="submit-btn" >SUBMIT</button>
             </form>
