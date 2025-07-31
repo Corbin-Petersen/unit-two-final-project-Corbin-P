@@ -5,6 +5,10 @@ import com.example.wistlish_app.models.Wishlist;
 import com.example.wistlish_app.models.dto.ItemDTO;
 import com.example.wistlish_app.repositories.ItemRepository;
 import com.example.wistlish_app.repositories.WishlistRepository;
+import org.htmlunit.BrowserVersion;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlPage;
+import org.htmlunit.jsoup.HtmlUnitDOMToJsoupConverter;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,28 +36,31 @@ public class ItemController {
     // method to scrape images from a URL using JSoup
     @GetMapping(value="/scrape-img", produces= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getImagesFromUrl(@RequestParam String url) {
-        try {
-            Document doc = Jsoup
-                    .connect(url)
-                    .ignoreContentType(true)
-                    .ignoreHttpErrors(true)
-                    .method(Connection.Method.POST)
-                    .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Safari/605.1.15")
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
-                    .header("Accept-Language", "en-US,en;q=0.9")
-                    .header("Accept-Encoding", "gzip, deflate, br")
-                    .header("Priority", "u=1,i")
-                    .header("Sec-Ch-Ua", "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"")
-                    .header("Sec-Ch-Ua-Mobile", "?0")
-                    .header("Sec-Fetch-Dest", "document")
-                    .header("Sec-Fetch-Mode", "navigate")
-                    .header("Sec-Fetch-site", "none")
-                    .header("Cache-Control", "max-age=0")
-                    .header("Upgrade-Insecure-Requests", "1")
-                    .referrer("https://www.google.com")
-                    .timeout(30000)
-                    .followRedirects(true)
-                    .get();
+        try (WebClient client = new WebClient(BrowserVersion.CHROME)) {
+            client.getOptions().setJavaScriptEnabled(true);
+            client.getOptions().setCssEnabled(false);
+            client.getOptions().setThrowExceptionOnScriptError(false);
+            client.getOptions().setThrowExceptionOnFailingStatusCode(false);
+            client.getOptions().setRedirectEnabled(true);
+            client.getOptions().setUseInsecureSSL(true); // For HTTPS
+            client.getCookieManager().setCookiesEnabled(true);
+
+            client.addRequestHeader("User-Agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+                            "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+            client.addRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+            client.addRequestHeader("Accept-Language", "en-US,en;q=0.5");
+
+            // Fetch the page using HtmlUnit
+            final HtmlPage page = client.getPage(url);
+
+            // wait for page to load
+            client.waitForBackgroundJavaScript(10000);
+
+            // Convert HtmlUnit page to Jsoup Document
+            final HtmlUnitDOMToJsoupConverter converter = HtmlUnitDOMToJsoupConverter.builder().build();
+            final org.jsoup.nodes.Document doc = (Document) converter.convert(page);
+
             Elements images = doc.select("img[src]");
             List<String> imageUrls = new ArrayList<>();
             if (images != null) {
