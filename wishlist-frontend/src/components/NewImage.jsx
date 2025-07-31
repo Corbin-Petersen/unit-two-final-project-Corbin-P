@@ -2,11 +2,21 @@ import { use, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function NewImage ( props) {
-    const { list, formInfo, setFormInfo, isLoading, setIsLoading } = props;
-    const [ itemImages, setItemImages ] = useState([]);
+    const { 
+        list, 
+        formInfo, 
+        setFormInfo, 
+        isLoading, 
+        setIsLoading, 
+        selectedImage, 
+        setSelectedImage, 
+        itemImages, 
+        setItemImages 
+    } = props;
 
     const getItemImages = async (url) => {
         setIsLoading(true);
+        setSelectedImage("");
         try {
             const response = await fetch(`http://localhost:8080/api/items/scrape-img?url=${url}`, {
                 method: 'GET',
@@ -28,31 +38,50 @@ export default function NewImage ( props) {
         }
     }
 
+    const selectImage = (image) => {
+        setFormInfo((d) => ({
+            ...d, 
+            imageUrl: image 
+        }))    
+    }
     useEffect(() => {
-        if (formInfo.itemUrl !== "") {
+        setSelectedImage("");
+        setItemImages([]);
+    }, []);
+    useEffect(() => {
+        if (formInfo.itemUrl !== "" && formInfo.imageUrl === "") {
             getItemImages(formInfo.itemUrl);
         }
     }, [formInfo]);
+    useEffect(() => {
+        if (selectedImage !== "") {
+            selectImage(selectedImage);
+        } 
+    }, [selectedImage]);
 
     return (
-        <div id="new-image" className="row">
-            { itemImages.length < 1 ? (
-                <img src={formInfo.imageUrl == "" ? "/default-img.png" : formInfo.itemImg} className="img-new" />
+        <div id="new-image" className="col">
+            { formInfo.imageUrl === "" && itemImages.length < 1 ? (
+                <img src={"/default-img.png"} className="img-new" />
             ) : isLoading ? (
                 <i class="fa-solid fa-spinner fa-spin fa-2xl" />
-            ) : itemImages.map(image => (
-                <div 
-                    key={itemImages.indexOf(image) + 1} 
-                    className="img-small" 
-                    style={{ backgroundImage: `url(${image})` }}
-                    onClick={() => {
-                        setFormInfo((d) => ({
-                            ...d, 
-                            imageUrl: image 
-                        })) 
-                    }} 
-                />
-            ))}
+            ) : (
+            <>
+                <div id="scraped-imgs" className="row">
+                    { itemImages.map(image => (
+                        <div 
+                            key={itemImages.indexOf(image) + 1} 
+                            className="scraped-img" 
+                            style={{ backgroundImage: `url(${image})` }}
+                            onClick={() => setSelectedImage(image)} 
+                        />
+                    ))}
+                </div>
+                <div className="selected-img">
+                    <img src={selectedImage !== "" ? selectedImage : "/default-img.png"} className="img-new" />
+                </div>
+            </>
+            )}
         </div>
     )
 }

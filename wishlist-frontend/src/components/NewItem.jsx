@@ -2,10 +2,13 @@ import { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import NewImage from "./NewImage";
+import { toast } from "react-toastify";
 
 export default function NewItem( props ) {
     const { userInfo, list, closeModal, setHasItems, handleModal, newItemModal } = props;
     const [ isLoading, setIsLoading ] = useState(false);
+    const [ selectedImage, setSelectedImage ] = useState("");
+    const [ itemImages, setItemImages ] = useState([]);
     const [ formInfo, setFormInfo ] = useState({
         name: "",
         cost: "",
@@ -25,8 +28,8 @@ export default function NewItem( props ) {
         }));
     };
 
-    const cancelAdd = (ref) => {
-        setFormData({
+    const resetForm = (ref) => {
+        setFormInfo({
             name: "",
             cost: "",
             itemUrl: "",
@@ -34,62 +37,62 @@ export default function NewItem( props ) {
             quantity: 1,
             listId: list.id
         });
+        setSelectedImage("");
+        setItemImages([]);
         handleModal(ref);
     }
     
     // submit new item to page
-    const submitNewItem = (e) => {
+    const submitNewItem = async (e) => {
         e.preventDefault();
-
-        // capture indexes of current list inside listItems array and current user inside data
-        const listIndex = userInfo.lists.findIndex((i) => i.listID === userList.listID);
-        const userIndex = data.findIndex((i) => i.userID === userInfo.userID);
-
-        // add itemID to new item object
-        formInfo.id = `${userList.listID}-${Math.floor(Math.random() * 900) + 100}`;
-
-        // convert cost and quantity values from strings to numbers
-        formInfo.cost = +formInfo.cost;
-        formInfo.quantity = +formInfo.quantity;
-
-        // add new item to the list inside userInfo inside data
-        data[userIndex].lists[listIndex].listItems.push(formInfo);
-
-        // update localStorage
-        localStorage.setItem('fakeData', JSON.stringify(data));
-
-        setHasItems(true);
-
-        // reset formInfo
-        setFormInfo({ itemID: "", itemName: "", itemCost: "", itemURL: "", itemImg: "/default-img.png", quantity: 1 });
-
-        handleModal(newItemModal.current);
+        setIsLoading(true);
+        try {
+            const response = await fetch(`http://localhost:8080/api/items/add`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formInfo)
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error("Failed to create new item");
+            }
+            toast.success("New item created successfully!", { theme: "colored" });
+        } catch (error) {
+            console.error("Error creating new item:", error);
+            toast.error("Failed to create new item: \n" + error.message, { theme: "colored" });
+        } finally {
+            setIsLoading(false);
+            resetForm(newItemModal.current);
+        }
     }
 
 
     return (
         <div className="modal make-new col">
-            <button className="close square" onClick={() => cancelAdd(newItemModal.current)}><i className="fa-solid fa-xmark"></i></button>
+            <button className="close square" onClick={() => resetForm(newItemModal.current)}><i className="fa-solid fa-xmark"></i></button>
             <div id="new-item-header">
                 <h2>Create New Item</h2>
             </div>
             <form name="new-item" id="new-item" className="col" method="post" onSubmit={submitNewItem}>
                 <label>ITEM NAME
-                    <input type="text" id="item-name" name="name" value={formInfo.itemName} onChange={handleChange} autoFocus required/>
-                </label>
-                <label>ITEM URL
-                    <input type="url" id="item-URL" name="itemUrl" value={formInfo.itemURL} onChange={handleChange} required/>
+                    <input type="text" id="item-name" name="name" value={formInfo.name} onChange={handleChange} autoFocus required/>
                 </label>
                 <div id="cost-count-inputs" className="row">
                     <label className="grow">COST
-                        <input type="number" step="0.01" id="cost" name="itemCost" value={formInfo.itemCost} onChange={handleChange} required/>
+                        <input type="number" step="0.01" id="cost" name="cost" value={formInfo.cost} onChange={handleChange} required/>
                     </label>
                     <label className="grow">QUANTITY
                         <input type="number" id="item-count" name="quantity" value={formInfo.quantity} onChange={handleChange} />
                     </label>
                 </div>
+                <label>ITEM URL
+                    <input type="url" id="item-URL" name="itemUrl" value={formInfo.itemUrl} onChange={handleChange} required/>
+                </label>
                 <div id="new-image">
-                    <NewImage formInfo={formInfo} setFormInfo={setFormInfo} isLoading={isLoading} setIsLoading={setIsLoading} />
+                    <NewImage formInfo={formInfo} setFormInfo={setFormInfo} isLoading={isLoading} setIsLoading={setIsLoading} selectedImage={selectedImage} setSelectedImage={setSelectedImage} itemImages={itemImages} setItemImages={setItemImages} />
                 </div>
                 <button className="submit-btn" >SUBMIT</button>
             </form>
