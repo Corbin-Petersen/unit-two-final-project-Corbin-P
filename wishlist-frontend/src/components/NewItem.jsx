@@ -3,14 +3,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 
 export default function NewItem( props ) {
-    const { data, userInfo, userList, closeModal, setHasItems, handleModal, newItemModal } = props;
+    const { userInfo, list, closeModal, setHasItems, handleModal, newItemModal } = props;
+    const [ isLoading, setIsLoading ] = useState(false);
     const [ formInfo, setFormInfo ] = useState({
-        itemID: "",
-        itemName: "",
-        itemCost: "",
-        itemURL: "",
-        itemImg: "",
-        quantity: 1
+        name: "",
+        cost: "",
+        itemUrl: "",
+        imageUrl: "",
+        quantity: 1,
+        listId: list.id
     });
     
     // set input handlers
@@ -61,24 +62,28 @@ export default function NewItem( props ) {
             </div>
             <form name="new-item" id="new-item" className="col" method="post" onSubmit={submitNewItem}>
                 <label>ITEM NAME
-                    <input type="text" id="item-name" name="itemName" value={formInfo.itemName} onChange={handleChange} autoFocus required/>
+                    <input type="text" id="item-name" name="name" value={formInfo.itemName} onChange={handleChange} autoFocus required/>
                 </label>
                 <label>ITEM URL
-                    <input type="url" id="item-URL" name="itemURL" value={formInfo.itemURL} onChange={handleChange} required/>
+                    <input type="url" id="item-URL" name="itemUrl" value={formInfo.itemURL} onChange={handleChange} required/>
                 </label>
                 <label>IMAGE URL
-                    <input type="url" id="link-image" name="itemImg" value={formInfo.itemImg} onChange={handleChange} />
+                    <input type="url" id="link-image" name="imageUrl" value={formInfo.itemImg} onChange={handleChange} />
                 </label>
                 <div id="cost-count-inputs" className="row">
                     <label className="grow">COST
-                        <input type="number" step="0.01" id="item-cost" name="itemCost" value={formInfo.itemCost} onChange={handleChange} required/>
+                        <input type="number" step="0.01" id="cost" name="itemCost" value={formInfo.itemCost} onChange={handleChange} required/>
                     </label>
                     <label className="grow">QUANTITY
                         <input type="number" id="item-count" name="quantity" value={formInfo.quantity} onChange={handleChange} />
                     </label>
                 </div>
                 <div id="new-image">
-                    <img src={formInfo.itemImg == "" ? "/default-img.png" : formInfo.itemImg} className="img-new" />
+                    { isLoading ? (
+                        <i class="fa-solid fa-spinner fa-spin fa-2xl" />
+                    ) : (
+                        <img src={formInfo.imageUrl == "" ? "/default-img.png" : formInfo.itemImg} className="img-new" />
+                    )}
                 </div>
                 <button className="submit-btn" >SUBMIT</button>
             </form>
