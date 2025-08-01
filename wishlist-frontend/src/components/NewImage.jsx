@@ -16,7 +16,7 @@ export default function NewImage ( props) {
     } = props;
 
     const getItemImages = async (url) => {
-        setSelectedImage("");
+        setSelectedImage(null);
         setIsLoading(true);
         try {
             const response = await fetch(`http://localhost:8080/api/items/scrape-img?url=${url}`, {
@@ -57,7 +57,7 @@ export default function NewImage ( props) {
         }
     }, [formInfo]);
     useEffect(() => {
-        if (selectedImage !== "") {
+        if (selectedImage) {
             chooseImage(selectedImage);
         } 
     }, [selectedImage]);
@@ -83,7 +83,7 @@ export default function NewImage ( props) {
                     ))}
                 </div>
                 <div className="selected-img">
-                    <img src={selectedImage !== "" ? selectedImage : "/default-img.png"} className="img-new" />
+                    <img src={selectedImage ? selectedImage : "/default-img.png"} className="img-new" />
                 </div>
             </>
             )} 

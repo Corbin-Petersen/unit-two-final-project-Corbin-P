@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 export default function NewItem( props ) {
     const { userInfo, list, closeModal, setHasItems, handleModal, newItemModal } = props;
     const [ isLoading, setIsLoading ] = useState(false);
-    const [ selectedImage, setSelectedImage ] = useState("");
+    const [ selectedImage, setSelectedImage ] = useState(null);
     const [ itemImages, setItemImages ] = useState(null);
     const [ formInfo, setFormInfo ] = useState({
         name: "",
@@ -100,6 +100,10 @@ export default function NewItem( props ) {
                 <label>ITEM URL
                     <input type="url" id="item-URL" name="itemUrl" value={formInfo.itemUrl} onChange={handleChange} required/>
                 </label>
+                <label>IMAGE URL
+                    <input type="url" id="image-URL" name="imageUrl" value={formInfo.imageUrl} placeholder="choose an image" onChange={handleChange} readOnly={selectedImage && itemImages} />
+                </label>
+
                 <NewImage formInfo={formInfo} setFormInfo={setFormInfo} isLoading={isLoading} setIsLoading={setIsLoading} selectedImage={selectedImage} setSelectedImage={setSelectedImage} itemImages={itemImages} setItemImages={setItemImages} />
                 <button className="submit-btn" >SUBMIT</button>
             </form>
