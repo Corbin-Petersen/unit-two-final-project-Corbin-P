@@ -116,7 +116,7 @@ export default function Lists( props ) {
                 <Fragment key={list.id} >
                     <div className="list-block row" id={list.id}>
                         <Link to={`/${userID}/lists/${list.id}`} className="no-decorate row grow" >
-                            <img src={list.items.length === 0 ? "/default-img.png" : list.items[0].itemImg} className="img-small" />
+                            <img src={list.items.length === 0 ? "/default-img.png" : list.items[0].imageUrl} className="img-small" />
                             <div className="list-block-text grow">
                                 <h4>{list.name}</h4>
                                 <p>{!list.items ? "0" : list.items.length} {list.items.length === 1 ? "Item" : "Items"}</p>

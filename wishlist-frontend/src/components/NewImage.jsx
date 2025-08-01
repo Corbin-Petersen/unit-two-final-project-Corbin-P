@@ -1,5 +1,6 @@
 import { use, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function NewImage ( props) {
     const { 
@@ -15,8 +16,8 @@ export default function NewImage ( props) {
     } = props;
 
     const getItemImages = async (url) => {
-        setIsLoading(true);
         setSelectedImage("");
+        setIsLoading(true);
         try {
             const response = await fetch(`http://localhost:8080/api/items/scrape-img?url=${url}`, {
                 method: 'GET',
@@ -38,36 +39,40 @@ export default function NewImage ( props) {
         }
     }
 
-    const selectImage = (image) => {
+    const chooseImage = (image) => {
         setFormInfo((d) => ({
             ...d, 
             imageUrl: image 
         }))    
     }
+
     useEffect(() => {
-        setSelectedImage("");
-        setItemImages([]);
+        setItemImages(null)
     }, []);
     useEffect(() => {
-        if (formInfo.itemUrl !== "" && formInfo.imageUrl === "") {
+        console.log(formInfo.itemUrl);
+        console.log(!itemImages);
+        if (formInfo.itemUrl !== "" && !itemImages) {
             getItemImages(formInfo.itemUrl);
         }
     }, [formInfo]);
     useEffect(() => {
         if (selectedImage !== "") {
-            selectImage(selectedImage);
+            chooseImage(selectedImage);
         } 
     }, [selectedImage]);
 
     return (
-        <div id="new-image" className="col">
-            { formInfo.imageUrl === "" && itemImages.length < 1 ? (
-                <img src={"/default-img.png"} className="img-new" />
-            ) : isLoading ? (
-                <i class="fa-solid fa-spinner fa-spin fa-2xl" />
+        <div id="new-image" >
+            { formInfo.imageUrl === "" && !itemImages ? (
+                isLoading ? (
+                    <FontAwesomeIcon icon="fa-solid fa-gear" spin size="2xl" />
+                ) : (
+                    <img src="/default-img.png" className="img-new" />
+                )
             ) : (
             <>
-                <div id="scraped-imgs" className="row">
+                <div id="scraped-imgs" >
                     { itemImages.map(image => (
                         <div 
                             key={itemImages.indexOf(image) + 1} 
@@ -81,7 +86,7 @@ export default function NewImage ( props) {
                     <img src={selectedImage !== "" ? selectedImage : "/default-img.png"} className="img-new" />
                 </div>
             </>
-            )}
+            )} 
         </div>
     )
 }

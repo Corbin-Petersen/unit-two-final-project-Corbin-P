@@ -4,7 +4,6 @@ import NewItem from "../components/NewItem";
 import ListItem from "../components/ListItem";
 import Item from "../components/Item";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
 import { toast } from "react-toastify";
 
 export default function ViewList( props ) {
@@ -143,24 +142,32 @@ export default function ViewList( props ) {
             </div>
             <div className="listview col">
                 <div className="list-btns row">
-                    <button className="new-item-btn square" style={{pointerEvents: isVisible ? "none" : "auto"}} title="add item" onClick={() => handleModal(newItemModal.current)} ><i className="fa-solid fa-plus"></i></button>
+                    <button className="new-item-btn square" style={{pointerEvents: isVisible ? "none" : "auto"}} title="add item" onClick={() => handleModal(newItemModal.current)} >
+                        <FontAwesomeIcon icon="fa-solid fa-plus" />
+                    </button>
                     <button className="copy square" title="copy to clipboard" onClick={confirmCopy}>
                     { copied ? (
-                       <span style={{color: '#008000'}}><FontAwesomeIcon icon="fa-solid fa-thumbs-up" /></span>
+                        <span style={{color: '#008000'}}>
+                            <FontAwesomeIcon icon="fa-solid fa-thumbs-up" />
+                        </span>
                     ) : (
-                       <span><FontAwesomeIcon icon="fa-solid fa-copy" /></span>
+                        <span><FontAwesomeIcon icon="fa-solid fa-copy" /></span>
                     )}
                     </button>
-                    <button className="share-list-btn square" style={{pointerEvents: isVisible ? "none" : "auto"}} title="share list" ><Link to={`../../shared/${sharedID}`} target="_blank" className="no-decorate"><i className="fa-solid fa-share"></i></Link></button>
+                    <button className="share-list-btn square" style={{pointerEvents: isVisible ? "none" : "auto"}} title="share list" >
+                        <Link to={`../../shared/${sharedID}`} target="_blank" className="no-decorate">
+                            <FontAwesomeIcon icon="fa-solid fa-share" />
+                        </Link>
+                    </button>
                 </div>
                 <div className="list-totals row">
                     <span id="item-count">ITEMS: <b>{listTotal()}</b></span>
                     <span id="cost-total">TOTAL: <b>${listCost()}</b></span>
                 </div>
-                <div className="list-display row">
+                <div className="list-display">
                     { hasItems ? list.items.map(item => (
-                    <Fragment key={`${item.id}`}>
                         <ListItem 
+                            key={`${item.id}`}
                             userList={list} 
                             item={item} 
                             handleModal={handleModal} 
@@ -168,7 +175,6 @@ export default function ViewList( props ) {
                             thisItem={thisItem}
                             getThisList={getThisList}
                         />
-                    </Fragment>
                     )) : (
                         <div id="no-items" className="col">
                             <h3>This list is empty</h3>

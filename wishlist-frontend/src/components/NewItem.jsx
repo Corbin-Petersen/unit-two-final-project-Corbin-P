@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
 import NewImage from "./NewImage";
 import { toast } from "react-toastify";
 
@@ -8,7 +7,7 @@ export default function NewItem( props ) {
     const { userInfo, list, closeModal, setHasItems, handleModal, newItemModal } = props;
     const [ isLoading, setIsLoading ] = useState(false);
     const [ selectedImage, setSelectedImage ] = useState("");
-    const [ itemImages, setItemImages ] = useState([]);
+    const [ itemImages, setItemImages ] = useState(null);
     const [ formInfo, setFormInfo ] = useState({
         name: "",
         cost: "",
@@ -21,17 +20,24 @@ export default function NewItem( props ) {
     // set input handlers
     const handleChange = (e) => {
         const { name, value } = e.target;
-        // console.log(`Updating ${name}:`, value);
         setFormInfo((d) => ({
             ...d,
             [name]: value,
         }));
     };
+    const handleChangeNum = (e) => {
+        const { name, value } = e.target;
+        setFormInfo((d) => ({
+            ...d,
+            [name]: parseFloat(value),
+        }));
+    };
+
 
     const resetForm = (ref) => {
         setFormInfo({
             name: "",
-            cost: "",
+            cost: 0,
             itemUrl: "",
             imageUrl: "",
             quantity: 1,
@@ -60,6 +66,7 @@ export default function NewItem( props ) {
                 throw new Error("Failed to create new item");
             }
             toast.success("New item created successfully!", { theme: "colored" });
+            list.items.push(data);
         } catch (error) {
             console.error("Error creating new item:", error);
             toast.error("Failed to create new item: \n" + error.message, { theme: "colored" });
@@ -72,7 +79,9 @@ export default function NewItem( props ) {
 
     return (
         <div className="modal make-new col">
-            <button className="close square" onClick={() => resetForm(newItemModal.current)}><i className="fa-solid fa-xmark"></i></button>
+            <button className="close square" onClick={() => resetForm(newItemModal.current)}>
+                <FontAwesomeIcon icon="fa-solid fa-xmark" />
+            </button>
             <div id="new-item-header">
                 <h2>Create New Item</h2>
             </div>
@@ -82,18 +91,16 @@ export default function NewItem( props ) {
                 </label>
                 <div id="cost-count-inputs" className="row">
                     <label className="grow">COST
-                        <input type="number" step="0.01" id="cost" name="cost" value={formInfo.cost} onChange={handleChange} required/>
+                        <input type="number" step="0.01" id="cost" name="cost" value={formInfo.cost} onChange={handleChangeNum} required/>
                     </label>
                     <label className="grow">QUANTITY
-                        <input type="number" id="item-count" name="quantity" value={formInfo.quantity} onChange={handleChange} />
+                        <input type="number" id="item-count" name="quantity" value={formInfo.quantity} onChange={handleChangeNum} />
                     </label>
                 </div>
                 <label>ITEM URL
                     <input type="url" id="item-URL" name="itemUrl" value={formInfo.itemUrl} onChange={handleChange} required/>
                 </label>
-                <div id="new-image">
-                    <NewImage formInfo={formInfo} setFormInfo={setFormInfo} isLoading={isLoading} setIsLoading={setIsLoading} selectedImage={selectedImage} setSelectedImage={setSelectedImage} itemImages={itemImages} setItemImages={setItemImages} />
-                </div>
+                <NewImage formInfo={formInfo} setFormInfo={setFormInfo} isLoading={isLoading} setIsLoading={setIsLoading} selectedImage={selectedImage} setSelectedImage={setSelectedImage} itemImages={itemImages} setItemImages={setItemImages} />
                 <button className="submit-btn" >SUBMIT</button>
             </form>
         </div>

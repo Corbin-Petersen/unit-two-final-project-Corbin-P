@@ -270,7 +270,7 @@ img {
 }
 .img-new {
     max-width: 100%;
-    max-height: 40vh;
+    max-height: 35vh;
 }
 #item-img {
     justify-content: center;
@@ -280,17 +280,21 @@ img {
 }
 #scraped-imgs {
     display: flex;
-    justify-content: flex-start;
+    flex-direction: row;
     flex-wrap: nowrap;
     gap: 10px;
-    width: 100%;
-    height: 80px;
-    overflow: hidden;
+    justify-content: flex-start;
+    align-items: flex-start;
+    max-width: 430px;
+    max-height: 80px;
     overflow-x: auto;
+    overflow-y: hidden;
     box-sizing: border-box;
 }
 .scraped-img {
-    width: 75px;
+    display: flex;
+    width: auto;
+    height: 7vh;
     aspect-ratio: 1/1;
     border-radius: 10px;
     background-repeat: no-repeat;
@@ -309,14 +313,14 @@ img {
     height: 100%;
 }
 #new-image {  
-    /* width: 100%; */
-    /* height: 30vw; */
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 10px;
     max-width: 64vw;
-    height: 100%;   
+    max-height: 400px;   
     justify-content: flex-start;
     align-items: center;
-    display: flex;
-    flex-wrap: wrap;
 }
 
 
@@ -551,9 +555,13 @@ label {
 }
 
 .list-display {
-    width: 100%;
+    display: flex;
     flex-wrap: wrap;
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
     justify-content: flex-start;
+    align-items: flex-start;
 }
 
 #no-items {
@@ -746,7 +754,7 @@ label {
 -------------- RESPONSIVE --------------
 ------------------------------------- */
 
-@media (max-width: 480px) {
+@media screen and (max-width: 480px) {
 
 /* ---------- COMPONENTS ---------- */
 
@@ -766,12 +774,15 @@ label {
 
     .modal {
         max-width: 90vw;
-        max-height: 90vh;
         margin: 2vh 0;
     }
 
     #view-item {
         justify-content: flex-start;
+    }
+
+    .list-display {
+        flex-direction: column;
     }
 
 
@@ -785,10 +796,24 @@ label {
         max-height: 65vh;
     }
     #new-image {
-        /* height: 60vw; */
+        flex-direction: column;
+        max-width: 100%;
     }
     .img-new {
         max-height: 100%;
+        max-width: 90%;
+    }
+    #scraped-imgs {
+        max-width: 100%;
+        max-height: 80px;
+        height: 60px;
+        overflow-x: auto;
+    }
+    .scraped-img {
+        min-height: 50px;
+    }
+    .selected-img {
+        max-width: 100%;
     }
 
 /* ---------- NAVIGATION ---------- */

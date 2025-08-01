@@ -1,10 +1,11 @@
+import { Fragment } from "react";
 import Item from "./Item";
 
 export default function ListItem ( props ) {
     const { userList, item, handleModal, isVisible, thisItem, getThisList } = props;
 
     return (
-        <div key={`${item.id}`}>
+        <Fragment key={`${item.id}`}>
             <div id={`${item.id}`} className="item col" onClick={(e) => handleModal(e.currentTarget.nextElementSibling)} style={{pointerEvents: isVisible ? "none" : "auto"}}>
                 <div className="item-block-img" style={{backgroundImage: item.imageUrl == "" ? "/src/assets/default-img.png" : `url(${item.imageUrl})`}}>
                 {item.quantity > 1 && 
@@ -19,6 +20,6 @@ export default function ListItem ( props ) {
             <div id={`${item.id}-view`} className="modal-bg" >
                 <Item userList={userList} item={item} handleModal={handleModal} thisItem={thisItem} getThisList={getThisList} />
             </div>
-        </div>
+        </Fragment>
     )
 }
