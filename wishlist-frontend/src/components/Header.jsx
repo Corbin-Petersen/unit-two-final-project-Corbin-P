@@ -3,7 +3,7 @@ import { useState } from "react";
 
 export default function Header( props ) {
     const [ menuOpen, setMenuOpen ] = useState(false);
-    const { userInfo, isLoggedIn, setIsLoggedIn } = props;
+    const { userID, userInfo, isLoggedIn, setIsLoggedIn } = props;
     
     const handleMenu = (e) => {
         e.preventDefault();
@@ -30,7 +30,7 @@ export default function Header( props ) {
                     ) : (
                     <ul className={ menuOpen ? "open" : "" }>
                         <li>
-                            <NavLink to={`${userInfo.id}/lists`} onClick={handleSubMenu} end>MY LISTS</NavLink>
+                            <NavLink to={`${userID}/lists`} onClick={handleSubMenu} end>MY LISTS</NavLink>
                         </li>
                         <li>
                             <NavLink to="/" onClick={handleSubMenu} reloadDocument end>LOGOUT</NavLink>

@@ -8,8 +8,8 @@ import { toast } from "react-toastify";
 
 export default function ViewList( props ) {
     // pull in params and set variables
-    const { userID, listID } = useParams();
-    const { userInfo } = props;
+    const { userId, listID } = useParams();
+    const { setUserID, userInfo } = props;
     const newItemModal = useRef(null);
     const viewItemModal = useRef(null);
     const [ isVisible, setIsVisible ] = useState(false);
@@ -20,11 +20,10 @@ export default function ViewList( props ) {
     const [ isLoading, setIsLoading ] = useState(false);
     const navigate = useNavigate();
         
-    // const userInfo = data.find(user => user.userID == userID);
     const getThisList = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:8080/api/${userID}/lists/${listID}`, {
+            const response = await fetch(`http://localhost:8080/api/${userId}/lists/${listID}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
@@ -44,6 +43,7 @@ export default function ViewList( props ) {
     }
     useEffect(() => {
         getThisList();
+        setUserID(userId);
     }, []);
 
     useEffect(() => {
@@ -168,7 +168,8 @@ export default function ViewList( props ) {
                     { hasItems ? list.items.map(item => (
                         <ListItem 
                             key={`${item.id}`}
-                            userList={list} 
+                            list={list} 
+                            setList={setList} 
                             item={item} 
                             handleModal={handleModal} 
                             isVisible={isVisible} 

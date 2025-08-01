@@ -65,14 +65,14 @@ function App() {
   return (
     <AppContext.Provider value={contextValue}>
       <ToastContainer />
-      <Header userInfo={userInfo} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      <Header userID={userID} userInfo={userInfo} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         <Routes>
           <Route path="/" element={<Home saveUser={saveUser} />} />
-          <Route path=":userID">
+          <Route path=":userId">
             <Route path="lists">
               <Route index element={
                 <Lists 
-                  userID={userID} 
+                  setUserID={setUserID} 
                   userInfo={userInfo} 
                   isLoggedIn={isLoggedIn} 
                   saveUserLists={saveUserLists}
@@ -80,7 +80,7 @@ function App() {
                   setCurrentUser={setCurrentUser}
                 />
               } />
-              <Route path=":listID" element={<ViewList userID={userID} userInfo={userInfo} userLists={userLists} isLoggedIn={isLoggedIn} />} />
+              <Route path=":listID" element={<ViewList setUserID={setUserID} userID={userID} userInfo={userInfo} userLists={userLists} isLoggedIn={isLoggedIn} />} />
             </Route>
             <Route path="shared">
               <Route path=":sharedID" element={<ShareList userInfo={userInfo} userLists={userLists} />} />

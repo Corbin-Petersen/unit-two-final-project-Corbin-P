@@ -9,10 +9,11 @@ export default function Item( props ) {
     // get params, refs, states, & props
     const confirmDialog = useRef(null);
     const [ confirmOpen, setConfirmOpen ] = useState(false);
-    const { userList, item, handleModal, thisItem, getThisList } = props;
+    const { list, setList, item, handleModal, thisItem, getThisList } = props;
 
     // function to handle confirm popup
     const handleConfirm = () => {
+        console.log(list);
         !confirmOpen ? (
             confirmDialog.current.style.display = "flex",
             setTimeout(() => {
@@ -30,7 +31,10 @@ export default function Item( props ) {
     }
 
     // function to delete item
-    const deleteItem = async () => {
+    const deleteItem = async (id) => {
+        //capture index of current item
+        const itemIndex = list.items.findIndex((i) => i.id === id);
+
         try {
             const response = await fetch(`http://localhost:8080/api/items/${item.id}/delete`, {
                 method: 'DELETE',
@@ -42,7 +46,8 @@ export default function Item( props ) {
             if (response.status !== 204) {
                 throw new Error("Failed to delete item");
             }
-            let updateList = (list) => list.filter((item, index) => index !== listIndex);
+            let refreshList = (list) => list.items.filter((item, index) => index !== itemIndex);
+            setList(refreshList);
             toast.success("Item deleted successfully");
         } catch (error) {
             console.error(error.message);
@@ -87,7 +92,7 @@ export default function Item( props ) {
             <div className="confirm-it" ref={confirmDialog}>
                 <h2>Are you sure you want to delete this?</h2>
                 <div className="confirm-btns">
-                    <button className="confirm" title="confirm delete" onClick={deleteItem}>CONFIRM</button>
+                    <button className="confirm" title="confirm delete" onClick={() => deleteItem(item.id)}>CONFIRM</button>
                     <button className="cancel" title="cancel delete" onClick={handleConfirm}>CANCEL</button>
                 </div>
             </div>
