@@ -59,7 +59,7 @@ public class UserController {
                 .httpOnly(true)
                 .path("/")
                 .maxAge(24 * 60 * 60) // 1 day
-                .secure(false) // Set to true if using HTTPS
+                .secure(false)
 //                .sameSite("Strict")
                 .build();
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
