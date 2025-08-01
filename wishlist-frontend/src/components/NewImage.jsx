@@ -50,8 +50,6 @@ export default function NewImage ( props) {
         setItemImages(null)
     }, []);
     useEffect(() => {
-        console.log(formInfo.itemUrl);
-        console.log(!itemImages);
         if (formInfo.itemUrl !== "" && !itemImages) {
             getItemImages(formInfo.itemUrl);
         }

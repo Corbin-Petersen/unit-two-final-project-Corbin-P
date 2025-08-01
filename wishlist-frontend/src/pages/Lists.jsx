@@ -18,24 +18,24 @@ export default function Lists( props ) {
     
     // fetch user lists
     const getUserLists = async () => {
-        let response;
-        let data;
         try {
-            response = await fetch(`http://localhost:8080/api/${userId}/lists`, {
+            const response = await fetch(`http://localhost:8080/api/${userId}/lists`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
-            data = await response.json();
-            if (!response.ok) {
-                throw new Error("Failed to fetch lists");
+            const data = await response.json();
+            if (response.status === 404) {
+                throw new Error("No lists were found");
+            } else if (response.status !== 404 && !response.ok) {
+                throw new Error("Error fetching lists");
             }
             saveUserLists(data);
             setLists(data);
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.message);
         }
     }
 

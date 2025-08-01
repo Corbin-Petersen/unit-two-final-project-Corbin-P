@@ -5,18 +5,18 @@ import { toast } from "react-toastify";
 export default function NewList( props ) {
     
     // destructure props, set states and variables
-    const { userID } = useParams();
+    const { userId } = useParams();
     const { handlePopup, userInfo, newListRef } = props;
     const [ formData, setFormData ] = useState({
         name: "",
         description: "",
         useClaimed: false,
-        userId: userID
+        userId: userId
     });
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log(userID);
+        console.log(userId);
     }, []);
 
     // set input handlers
@@ -34,7 +34,7 @@ export default function NewList( props ) {
             name: "",
             description: "",
             useClaimed: false,
-            userId: userID
+            userId: userId
         });
         handlePopup(ref);
     }
@@ -43,7 +43,7 @@ export default function NewList( props ) {
     const submitNewList = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:8080/api/${userID}/lists/add`, {
+            const response = await fetch(`http://localhost:8080/api/${userId}/lists/add`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -57,7 +57,7 @@ export default function NewList( props ) {
             }
             toast.success("New list created successfully!", { theme: "colored" });
             handlePopup(newListRef.current);
-            navigate(`/${userID}/lists/${data.id}`);
+            navigate(`/${userId}/lists/${data.id}`);
         } catch (error) {
             console.error("Error creating new list:", error);
             toast.error("Error creating a new list: \n" + error.message, { theme: "colored" });

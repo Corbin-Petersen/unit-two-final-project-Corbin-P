@@ -7,14 +7,14 @@ export default function NewUser( props ) {
         firstName: "",
         lastName: "",
         email: "",
-        password: ""
+        userPass: ""
     });
 
     // set input handlers
     const handleChange = (e) => {
         const { name, value } = e.target;
-        // console.log(`Updating ${name}:`, value);
-        setFormData((d) => ({
+        console.log(`Updating ${name}:`, value);
+        setNewUser((d) => ({
             ...d,
             [name]: value,
         }));
@@ -23,12 +23,10 @@ export default function NewUser( props ) {
     // register new user
     const registerUser = async (e) => {
         e.preventDefault();
-
-        let response;
-        
+        console.log(newUser);
         try {
             // register API
-            response = await fetch(`http://localhost:8080/api/user/register`, {
+            const response = await fetch(`http://localhost:8080/api/user/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -39,6 +37,9 @@ export default function NewUser( props ) {
                 // handle successful registration
                 closeModal();
                 toast.success("Registration successful! You can now log in.");
+            } else if (response.status === 403 ){
+                // handle error response
+                toast.error("Oops! Something went wrong. Please try again.");
             } else {
                 // handle error response
                 toast.error("Oops! That email is already registered. Please try again.");
@@ -66,7 +67,7 @@ export default function NewUser( props ) {
                     <input type="email" id="new-email" name="email" placeholder="valid@email.com" onChange={handleChange} />
                 </label>
                 <label>PASSWORD
-                    <input type="password" id="new-pass" name="password" autoComplete="set password" onChange={handleChange} />
+                    <input type="password" id="new-pass" name="userPass" autoComplete="set password" onChange={handleChange} />
                 </label>
                 <button className="submit-btn">REGISTER</button>
             </form>        
