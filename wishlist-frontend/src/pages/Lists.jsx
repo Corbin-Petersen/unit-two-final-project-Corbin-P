@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 export default function Lists( props ) {
     // pull in params and set variables
     const { userId } = useParams();
-    const { setUserID, userInfo, isLoggedIn, saveUserLists, getCurrentUser, setCurrentUser } = props;
+    const { userID, setUserID, userInfo, isLoggedIn, saveUserLists, getCurrentUser, setCurrentUser } = props;
     const [ isVisible, setIsVisible ] = useState(false);
     const [ hasLists, setHasLists ] = useState(true);
     const [ lists, setLists ] = useState([]);
@@ -41,11 +41,15 @@ export default function Lists( props ) {
 
     useEffect(() => {
         getUserLists();
-        setUserID(userId);
     }, []);
     useEffect(() => {
         lists.length < 1 ? setHasLists(false) : setHasLists(true);
     }, [lists]);
+    useEffect(() => {
+        if (!userID) {
+            setUserID(userId);
+        }
+    }, [userID]);
 
     // function to delete lists
     const deleteList = async (id) => {

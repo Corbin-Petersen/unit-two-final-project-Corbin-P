@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NewImage from "./NewImage";
 import { toast } from "react-toastify";
@@ -29,11 +29,17 @@ export default function NewItem( props ) {
         const { name, value } = e.target;
         setFormInfo((d) => ({
             ...d,
-            [name]: parseFloat(value),
+            [name]: parseFloat(value).toFixed(2),
         }));
     };
 
+    useEffect(() => {
+        if (formInfo.itemUrl === ""){
+            setItemImages(null);
+        }
+    }, [formInfo.itemUrl])
 
+    // Set form back to default values if user closes modal window
     const resetForm = (ref) => {
         setFormInfo({
             name: "",
@@ -44,8 +50,14 @@ export default function NewItem( props ) {
             listId: list.id
         });
         setSelectedImage("");
-        setItemImages([]);
         handleModal(ref);
+    }
+
+    const updateItems = (item) => {
+        setItems((d) => ([
+            ...d,
+            item
+        ]))
     }
     
     // submit new item to page
@@ -66,8 +78,7 @@ export default function NewItem( props ) {
                 throw new Error("Failed to create new item");
             }
             toast.success("New item created successfully!", { theme: "colored" });
-            const updatedItems = items.push(data);
-            setItems(updatedItems);
+            updateItems(data);
         } catch (error) {
             console.error("Error creating new item:", error);
             toast.error("Failed to create new item: \n" + error.message, { theme: "colored" });

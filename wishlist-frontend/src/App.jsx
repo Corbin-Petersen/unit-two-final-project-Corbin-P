@@ -72,6 +72,7 @@ function App() {
             <Route path="lists">
               <Route index element={
                 <Lists 
+                  userID={userID}
                   setUserID={setUserID} 
                   userInfo={userInfo} 
                   isLoggedIn={isLoggedIn} 

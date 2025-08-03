@@ -14,7 +14,7 @@ export default function ListItem ( props ) {
                 </div>
                 <div className="item-block-text">
                     <h4>{item.name}</h4>
-                    <p className="price">${item.cost}</p>
+                    <p className="price">${item.cost.toFixed(2)}</p>
                 </div>
             </div>
             <div id={`${item.id}-view`} className="modal-bg" >

@@ -14,6 +14,7 @@ export default function NewImage ( props) {
         itemImages, 
         setItemImages 
     } = props;
+    const [ hasImages, setHasImages ] = useState(false);
 
     const getItemImages = async (url) => {
         setSelectedImage(null);
@@ -29,6 +30,9 @@ export default function NewImage ( props) {
             const data = await response.json();
             if (!response.ok) {
                 throw new Error("Failed to fetch item images");
+            }
+            if (data.length < 1) {
+                toast.error("Unable to fetch images from item URL. \nIf you'd like to add an image to the item, please input the image URL manually.", {theme: "colored"});
             }
             setItemImages(data);
         } catch (error) {
@@ -50,30 +54,37 @@ export default function NewImage ( props) {
         setItemImages(null)
     }, []);
     useEffect(() => {
-        if (formInfo.itemUrl !== "" && !itemImages) {
+        if (formInfo.itemUrl !== "") {
             getItemImages(formInfo.itemUrl);
         }
-    }, [formInfo]);
+    }, [formInfo.itemUrl]);
     useEffect(() => {
         if (selectedImage) {
             chooseImage(selectedImage);
         } 
     }, [selectedImage]);
+    useEffect(() => {
+        if (itemImages) {
+            if (itemImages.length > 0 || itemImages[0] !== ""){
+                setHasImages(true);
+            }
+        }
+    }, [itemImages])
 
     return (
         <div id="new-image" >
-            { formInfo.imageUrl === "" && !itemImages ? (
+            { !hasImages ? (
                 isLoading ? (
                     <FontAwesomeIcon icon="fa-solid fa-gear" spin size="2xl" />
                 ) : (
-                    <img src="/default-img.png" className="img-new" />
+                    <img src={formInfo.imageUrl !== "" ? formInfo.imageUrl : "/default-img.png"} className="img-new" />
                 )
             ) : (
             <>
                 <div id="scraped-imgs" >
-                    { itemImages.map(image => (
+                    { itemImages.map((image, index) => (
                         <div 
-                            key={itemImages.indexOf(image) + 1} 
+                            key={(index + 1)} 
                             className="scraped-img" 
                             style={{ backgroundImage: `url(${image})` }}
                             onClick={() => setSelectedImage(image)} 
@@ -81,7 +92,11 @@ export default function NewImage ( props) {
                     ))}
                 </div>
                 <div className="selected-img">
-                    <img src={selectedImage ? selectedImage : "/default-img.png"} className="img-new" />
+                    <img src={selectedImage 
+                        ? selectedImage 
+                        : formInfo.imageUrl !== "" 
+                        ? formInfo.imageUrl
+                        : "/default-img.png"} className="img-new" />
                 </div>
             </>
             )} 

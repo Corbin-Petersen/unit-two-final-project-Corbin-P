@@ -58,6 +58,7 @@ export default function ViewList( props ) {
         if (items && items.length > 0) {
             setHasItems(true);
         } 
+        console.log(items);
     }, [items]);
         
 
@@ -73,30 +74,35 @@ export default function ViewList( props ) {
 
     // function to total cost of all items
     const listCost = () => {
-        if (!hasItems) return "0.00";
-        let total = 0;
-        items.map(item => (
-            item.quantity 
-            ? total += (item.cost * item.quantity)
-            : total += item.cost
-        ));
-        return total.toFixed(2);
+        if (hasItems) {
+            let total = 0;
+            items.map(item => (
+                item.quantity 
+                ? total += (item.cost * item.quantity)
+                : total += item.cost
+            ));
+            return total.toFixed(2);
+        } else {
+            return "0.00";
+        }
     }    
     
     // function to convert list to text for simple sharing
     const saveToText = () => {
-        if (!hasItems) return "This list is empty";
-        let text = "";
-        items.map((item) => {
-            text += `${item.name} - $${item.cost}: ${item.itemURL} \n \n`;
-        });
-        return text;
+        if (hasItems) {
+            let text = "";
+            items.map(item => {
+                text += `${item.name} - $${item.cost.toFixed(2)}: ${item.itemURL} \n \n`;
+            });
+            return text;
+        } else {
+            return "This list is empty";
+        }
     }
-    // variable to hold the text
-    const textList = saveToText();
-
+    
     // handle copy onclick and trigger feedback thumbs up
     const confirmCopy = (e) => {
+        const textList = saveToText();
         navigator.clipboard.writeText(textList);
         setCopied(true);
     }    
