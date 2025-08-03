@@ -8,6 +8,7 @@ export default function NewItem( props ) {
     const [ isLoading, setIsLoading ] = useState(false);
     const [ selectedImage, setSelectedImage ] = useState(null);
     const [ itemImages, setItemImages ] = useState(null);
+    const [ hasImages, setHasImages ] = useState(false);
     const [ formInfo, setFormInfo ] = useState({
         name: "",
         cost: "",
@@ -29,7 +30,7 @@ export default function NewItem( props ) {
         const { name, value } = e.target;
         setFormInfo((d) => ({
             ...d,
-            [name]: parseFloat(value).toFixed(2),
+            [name]: parseFloat(value),
         }));
     };
 
@@ -49,7 +50,9 @@ export default function NewItem( props ) {
             quantity: 1,
             listId: list.id
         });
-        setSelectedImage("");
+        setSelectedImage(null);
+        setHasImages(null);
+        setItemImages(null);
         handleModal(ref);
     }
 
@@ -63,6 +66,8 @@ export default function NewItem( props ) {
     // submit new item to page
     const submitNewItem = async (e) => {
         e.preventDefault();
+        setItemImages(null);
+        setHasImages(null);
         setIsLoading(true);
         try {
             const response = await fetch(`http://localhost:8080/api/items/add`, {
@@ -116,7 +121,7 @@ export default function NewItem( props ) {
                     <input type="url" id="image-URL" name="imageUrl" value={formInfo.imageUrl} placeholder="choose an image" onChange={handleChange} readOnly={selectedImage && itemImages} />
                 </label>
 
-                <NewImage formInfo={formInfo} setFormInfo={setFormInfo} isLoading={isLoading} setIsLoading={setIsLoading} selectedImage={selectedImage} setSelectedImage={setSelectedImage} itemImages={itemImages} setItemImages={setItemImages} />
+                <NewImage formInfo={formInfo} setFormInfo={setFormInfo} isLoading={isLoading} setIsLoading={setIsLoading} hasImages={hasImages} setHasImages={setHasImages} selectedImage={selectedImage} setSelectedImage={setSelectedImage} itemImages={itemImages} setItemImages={setItemImages} />
                 <button className="submit-btn" >SUBMIT</button>
             </form>
         </div>

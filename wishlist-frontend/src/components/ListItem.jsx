@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import Item from "./Item";
 
 export default function ListItem ( props ) {
-    const { list, setList, userList, item, handleModal, isVisible, thisItem, getThisList } = props;
+    const { list, setList, items, setItems, userList, item, handleModal, isVisible, thisItem, getThisList } = props;
 
     return (
         <Fragment key={`${item.id}`}>
@@ -18,7 +18,7 @@ export default function ListItem ( props ) {
                 </div>
             </div>
             <div id={`${item.id}-view`} className="modal-bg" >
-                <Item list={list} setList={setList} userList={userList} item={item} handleModal={handleModal} thisItem={thisItem} getThisList={getThisList} />
+                <Item list={list} setList={setList} items={items} setItems={setItems} userList={userList} item={item} handleModal={handleModal} thisItem={thisItem} getThisList={getThisList} />
             </div>
         </Fragment>
     )

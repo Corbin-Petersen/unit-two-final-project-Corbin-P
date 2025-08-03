@@ -58,7 +58,6 @@ export default function ViewList( props ) {
         if (items && items.length > 0) {
             setHasItems(true);
         } 
-        console.log(items);
     }, [items]);
         
 
@@ -182,6 +181,8 @@ export default function ViewList( props ) {
                             key={`${item.id}`}
                             list={list} 
                             setList={setList} 
+                            items={items}
+                            setItems={setItems}
                             item={item} 
                             handleModal={handleModal} 
                             isVisible={isVisible} 

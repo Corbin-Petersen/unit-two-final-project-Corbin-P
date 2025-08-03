@@ -5,16 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 export default function NewImage ( props) {
     const { 
         list, 
-        formInfo, 
-        setFormInfo, 
-        isLoading, 
-        setIsLoading, 
-        selectedImage, 
-        setSelectedImage, 
-        itemImages, 
-        setItemImages 
+        formInfo, setFormInfo, 
+        isLoading, setIsLoading, 
+        hasImages, setHasImages,
+        selectedImage, setSelectedImage, 
+        itemImages, setItemImages 
     } = props;
-    const [ hasImages, setHasImages ] = useState(false);
 
     const getItemImages = async (url) => {
         setSelectedImage(null);

@@ -9,7 +9,7 @@ export default function Item( props ) {
     // get params, refs, states, & props
     const confirmDialog = useRef(null);
     const [ confirmOpen, setConfirmOpen ] = useState(false);
-    const { list, setList, item, handleModal, thisItem, getThisList } = props;
+    const { list, setList, items, setItems, item, handleModal, thisItem, getThisList } = props;
 
     // function to handle confirm popup
     const handleConfirm = () => {
@@ -31,12 +31,12 @@ export default function Item( props ) {
     }
 
     // function to delete item
-    const deleteItem = async (id) => {
+    const deleteItem = async (itemId) => {
         //capture index of current item
-        const itemIndex = list.items.findIndex((i) => i.id === id);
+        const itemIndex = items.findIndex((i) => i.id === itemId);
 
         try {
-            const response = await fetch(`http://localhost:8080/api/items/${item.id}/delete`, {
+            const response = await fetch(`http://localhost:8080/api/items/${itemId}/delete`, {
                 method: 'DELETE',
                 credentials: 'include',
                 headers: {
@@ -46,7 +46,7 @@ export default function Item( props ) {
             if (response.status !== 204) {
                 throw new Error("Failed to delete item");
             }
-            let refreshList = (list) => list.items.filter((item, index) => index !== itemIndex);
+            let refreshList = items.splice(itemIndex, 1);
             setList(refreshList);
             toast.success("Item deleted successfully");
         } catch (error) {
