@@ -17,9 +17,11 @@ export default function ViewList( props ) {
     const [ thisItem, setThisItem ] = useState(null);
     const [ copied, setCopied ] = useState(false);
     const [ list, setList ] = useState(null);
+    const [ items, setItems ] = useState(null);
     const [ isLoading, setIsLoading ] = useState(false);
     const navigate = useNavigate();
-        
+    
+    // Get current list from database
     const getThisList = async () => {
         setIsLoading(true);
         try {
@@ -35,33 +37,37 @@ export default function ViewList( props ) {
                 throw new Error("Failed to fetch list");
             }
             setList(data);
+            setItems(data.items);
         } catch (error) {
             console.error(error.message);
             toast.error(error.message);
         }
         setIsLoading(false);
     }
-    useEffect(() => {
-        getThisList();
-        setUserID(userId);
-    }, []);
 
+    // USE EFFECT BLOCKS
     useEffect(() => {
-        if (list?.items?.length > 0) {
-            setHasItems(true);
-        } else {
-            setHasItems(false);
+        setUserID(userId);
+    }, [])
+    useEffect(() => {
+        if (!list) {
+            getThisList();
         }
     }, [list]);
+    useEffect(() => {
+        if (items && items.length > 0) {
+            setHasItems(true);
+        } 
+    }, [items]);
         
 
     // function to check if items need extra spacers
-    const hasSpace = !hasItems ? 0 : list.items.length % 3;
+    const hasSpace = !hasItems ? 0 : items.length % 3;
 
     const listTotal = () => {
         let zero = 0;
         if (!hasItems) return zero;
-        let total = list.items.length;
+        let total = items.length;
         return total;
     }
 
@@ -69,7 +75,7 @@ export default function ViewList( props ) {
     const listCost = () => {
         if (!hasItems) return "0.00";
         let total = 0;
-        list.items.map(item => (
+        items.map(item => (
             item.quantity 
             ? total += (item.cost * item.quantity)
             : total += item.cost
@@ -81,7 +87,7 @@ export default function ViewList( props ) {
     const saveToText = () => {
         if (!hasItems) return "This list is empty";
         let text = "";
-        list.items.map((item) => {
+        items.map((item) => {
             text += `${item.name} - $${item.cost}: ${item.itemURL} \n \n`;
         });
         return text;
@@ -165,7 +171,7 @@ export default function ViewList( props ) {
                     <span id="cost-total">TOTAL: <b>${listCost()}</b></span>
                 </div>
                 <div className="list-display">
-                    { hasItems ? list.items.map(item => (
+                    { hasItems ? items.map(item => (
                         <ListItem 
                             key={`${item.id}`}
                             list={list} 
@@ -187,7 +193,7 @@ export default function ViewList( props ) {
                 </div>
             </div>
             <div className="modal-bg" ref={newItemModal}>
-                <NewItem userInfo={userInfo} list={list} handleModal={handleModal} setHasItems={setHasItems} newItemModal={newItemModal} />
+                <NewItem userInfo={userInfo} items={items} setItems={setItems} list={list} setList={setList} handleModal={handleModal} setHasItems={setHasItems} newItemModal={newItemModal} />
             </div>
         </div>
     );

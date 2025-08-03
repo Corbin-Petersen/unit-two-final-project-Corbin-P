@@ -18,7 +18,7 @@ public class Item {
     @Column(length = 2083) // URL length limit
     private String imageUrl;
     private int quantity;
-    private int cost;
+    private double cost;
     @Column(columnDefinition = "TINYINT") // Using TINYINT for boolean in MySQL
     private boolean isClaimed;
     private LocalDate createdOn;
@@ -78,11 +78,11 @@ public class Item {
         this.quantity = quantity;
     }
 
-    public int getCost() {
+    public double getCost() {
         return cost;
     }
 
-    public void setCost(int cost) {
+    public void setCost(double cost) {
         this.cost = cost;
     }
 

@@ -4,7 +4,7 @@ import NewImage from "./NewImage";
 import { toast } from "react-toastify";
 
 export default function NewItem( props ) {
-    const { userInfo, list, closeModal, setHasItems, handleModal, newItemModal } = props;
+    const { userInfo, items, setItems, list, setList, closeModal, setHasItems, handleModal, newItemModal } = props;
     const [ isLoading, setIsLoading ] = useState(false);
     const [ selectedImage, setSelectedImage ] = useState(null);
     const [ itemImages, setItemImages ] = useState(null);
@@ -66,7 +66,8 @@ export default function NewItem( props ) {
                 throw new Error("Failed to create new item");
             }
             toast.success("New item created successfully!", { theme: "colored" });
-            list.items.push(data);
+            const updatedItems = items.push(data);
+            setItems(updatedItems);
         } catch (error) {
             console.error("Error creating new item:", error);
             toast.error("Failed to create new item: \n" + error.message, { theme: "colored" });

@@ -8,7 +8,7 @@ public class ItemDTO {
     private String itemUrl;
     private String imageUrl;
     private int quantity;
-    private int cost;
+    private double cost;
     private int listId;
 
     // Getters and Setters
@@ -45,11 +45,11 @@ public class ItemDTO {
         this.quantity = quantity;
     }
 
-    public int getCost() {
+    public double getCost() {
         return cost;
     }
 
-    public void setCost(int cost) {
+    public void setCost(double cost) {
         this.cost = cost;
     }
 
