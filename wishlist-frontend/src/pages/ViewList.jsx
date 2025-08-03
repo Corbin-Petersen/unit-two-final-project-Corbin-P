@@ -59,6 +59,11 @@ export default function ViewList( props ) {
             setHasItems(true);
         } 
     }, [items]);
+    useEffect(() => {
+        setTimeout(() => {
+            setCopied(false);
+        }, 1000)
+    }, [copied]);
         
 
     // function to check if items need extra spacers
@@ -76,9 +81,7 @@ export default function ViewList( props ) {
         if (hasItems) {
             let total = 0;
             items.map(item => (
-                item.quantity 
-                ? total += (item.cost * item.quantity)
-                : total += item.cost
+                total += (item.cost * item.quantity)
             ));
             return total.toFixed(2);
         } else {
@@ -130,11 +133,6 @@ export default function ViewList( props ) {
         setIsVisible(!isVisible);
     }
     
-    useEffect(() => {
-        setTimeout(() => {
-            setCopied(false);
-        }, 1000)
-    }, [copied]);
 
     if (!list) {
         return (
