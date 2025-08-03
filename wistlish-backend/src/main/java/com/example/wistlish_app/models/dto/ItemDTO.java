@@ -2,13 +2,15 @@ package com.example.wistlish_app.models.dto;
 
 import jakarta.persistence.Column;
 
+import java.math.BigDecimal;
+
 public class ItemDTO {
     // make fields necessary for item creation
     private String name;
     private String itemUrl;
     private String imageUrl;
     private int quantity;
-    private double cost;
+    private BigDecimal cost;
     private int listId;
 
     // Getters and Setters
@@ -45,11 +47,11 @@ public class ItemDTO {
         this.quantity = quantity;
     }
 
-    public double getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
 
-    public void setCost(double cost) {
+    public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
 
