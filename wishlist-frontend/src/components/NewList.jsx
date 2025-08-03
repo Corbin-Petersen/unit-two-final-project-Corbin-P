@@ -15,9 +15,9 @@ export default function NewList( props ) {
     });
     const navigate = useNavigate();
 
-    useEffect(() => {
-        console.log(userId);
-    }, []);
+    // useEffect(() => {
+    //     console.log(userId);
+    // }, []);
 
     // set input handlers
     const handleChange = (e) => {

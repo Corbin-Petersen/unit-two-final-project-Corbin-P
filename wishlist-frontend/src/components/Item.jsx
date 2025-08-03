@@ -13,7 +13,6 @@ export default function Item( props ) {
 
     // function to handle confirm popup
     const handleConfirm = () => {
-        console.log(list);
         !confirmOpen ? (
             confirmDialog.current.style.display = "flex",
             setTimeout(() => {
