@@ -30,7 +30,7 @@ public class Item {
 
     // Constructors
     public Item() {}
-    public Item(String name, String itemUrl, String imageUrl, int quantity, int cost, Wishlist list) {
+    public Item(String name, String itemUrl, String imageUrl, int quantity, double cost, Wishlist list) {
         this.name = name;
         this.itemUrl = itemUrl;
         this.imageUrl = imageUrl;
