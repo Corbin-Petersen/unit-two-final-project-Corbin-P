@@ -16,6 +16,18 @@ export default function Lists( props ) {
     const [ thisModal, setThisModal ] = useState(null);
     const newListRef = useRef(0);
     
+    useEffect(() => {
+        getUserLists();
+    }, []);
+    useEffect(() => {
+        lists.length < 1 ? setHasLists(false) : setHasLists(true);
+    }, [lists]);
+    useEffect(() => {
+        if (!userID) {
+            setUserID(userId);
+        }
+    }, [userID]);
+
     // fetch user lists
     const getUserLists = async () => {
         try {
@@ -38,18 +50,6 @@ export default function Lists( props ) {
             toast.error(error.message);
         }
     }
-
-    useEffect(() => {
-        getUserLists();
-    }, []);
-    useEffect(() => {
-        lists.length < 1 ? setHasLists(false) : setHasLists(true);
-    }, [lists]);
-    useEffect(() => {
-        if (!userID) {
-            setUserID(userId);
-        }
-    }, [userID]);
 
     // function to delete lists
     const deleteList = async (id) => {

@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import Item from "./Item";
 
 export default function ListItem ( props ) {
-    const { items, setItems, userList, item, handleModal, isVisible, thisItem } = props;
+    const { items, setItems, item, handleModal, isVisible, thisItem } = props;
     const [ claimed, setClaimed ] =useState(false);
 
     useEffect(() => {
@@ -49,7 +49,7 @@ export default function ListItem ( props ) {
                 </div>
             </div>
             <div id={`${item.id}-view`} className="modal-bg" >
-                <Item items={items} setItems={setItems} userList={userList} item={item} handleModal={handleModal} thisItem={thisItem} claimed={claimed} setClaimed={setClaimed} manageClaimedAdmin={manageClaimedAdmin} />
+                <Item items={items} setItems={setItems} item={item} handleModal={handleModal} thisItem={thisItem} claimed={claimed} setClaimed={setClaimed} manageClaimedAdmin={manageClaimedAdmin} />
             </div>
         </Fragment>
     )

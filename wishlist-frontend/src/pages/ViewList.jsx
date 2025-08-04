@@ -15,19 +15,16 @@ export default function ViewList( props ) {
     const [ copied, setCopied ] = useState(false);
     const [ list, setList ] = useState(null);
     const [ items, setItems ] = useState(null);
-    const [ isLoading, setIsLoading ] = useState(false);
     const newItemModal = useRef(null);
     const navigate = useNavigate();
     
     // USE EFFECT BLOCKS
     useEffect(() => {
-        setUserID(userId);
-    }, [])
+        getThisList();
+    }, []);
     useEffect(() => {
-        if (!list) {
-            getThisList();
-        }
-    }, [list]);
+        setUserID(userId);
+    }, [userId]);
     useEffect(() => {
         if (items && items.length > 0) {
             setHasItems(true);
@@ -41,7 +38,6 @@ export default function ViewList( props ) {
         
     // Get current list from database
     const getThisList = async () => {
-        setIsLoading(true);
         try {
             const response = await fetch(`http://localhost:8080/api/${userId}/lists/${listID}`, {
                 method: 'GET',
@@ -59,9 +55,7 @@ export default function ViewList( props ) {
         } catch (error) {
             console.error(error.message);
             toast.error(error.message);
-        } finally {
-            setIsLoading(false);
-        }
+        } 
     }
 
     // function to check if items need extra spacers
@@ -79,9 +73,9 @@ export default function ViewList( props ) {
     const listCost = () => {
         if (hasItems) {
             let total = 0;
-            items.map(item => (
+            items.forEach(item => {
                 total += (item.cost * item.quantity)
-            ));
+            });
             return total.toFixed(2);
         } else {
             return "0.00";
@@ -92,7 +86,7 @@ export default function ViewList( props ) {
     const saveToText = () => {
         if (hasItems) {
             let text = "";
-            items.map(item => {
+            items.forEach(item => {
                 if (item.isClaimed) {
                     text += `${item.name} - $${item.cost.toFixed(2)} [CLAIMED]: ${item.itemURL} \n \n`;
                 }
@@ -113,12 +107,12 @@ export default function ViewList( props ) {
     }    
 
     // URL for shared list that incorporates listID and userID
-    const sharedID = `${listID}l${Math.floor(Math.random() * 90) + 10}u${userId}share`;
+    const sharedID = useRef(`${listID}l${Math.floor(Math.random() * 90) + 10}u${userId}share`).current;
 
     // function to handle modals
     const handleModal = (divRef) => {
         !isVisible ? (
-            // setThisItem(divRef), 
+            setThisItem(divRef), 
             divRef.style.display = "flex",
             setTimeout(() => {
                 document.body.style.overflow = "hidden",
@@ -137,7 +131,7 @@ export default function ViewList( props ) {
     }
     
     // Loading indicator 
-    if (isLoading) {
+    if (!list) {
         return (
             <div className="loading col">
                 <h2>Loading...</h2>
@@ -180,6 +174,7 @@ export default function ViewList( props ) {
                     { hasItems ? items.map(item => (
                         <ListItem 
                             key={`${item.id}`}
+                            list={list}
                             items={items}
                             setItems={setItems}
                             item={item} 
