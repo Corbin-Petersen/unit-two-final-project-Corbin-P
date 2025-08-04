@@ -7,7 +7,7 @@ export default function ListItem ( props ) {
     return (
         <Fragment key={`${item.id}`}>
             <div id={`${item.id}`} className="item col" onClick={(e) => handleModal(e.currentTarget.nextElementSibling)} style={{pointerEvents: isVisible ? "none" : "auto"}}>
-                <div className="item-block-img" style={{backgroundImage: item.imageUrl == "" ? "/src/assets/default-img.png" : `url(${item.imageUrl})`}}>
+                <div className="item-block-img" style={{backgroundImage: item.imageUrl == "" ? "/src/assets/default-img.png" : `url(${item.imageUrl})`}} title={item.imageUrl == "" ? "default image" : item.name}>
                 {item.quantity > 1 && 
                     <p className="list-need">QUANTITY: <span className="list-need-num">{item.quantity}</span></p>
                 }

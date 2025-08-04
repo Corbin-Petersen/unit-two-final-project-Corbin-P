@@ -165,7 +165,7 @@ export default function ViewList( props ) {
                     )}
                     </button>
                     <button className="share-list-btn square" style={{pointerEvents: isVisible ? "none" : "auto"}} title="share list" >
-                        <Link to={`../../shared/${sharedID}`} target="_blank" className="no-decorate">
+                        <Link to={`../../../shared/${sharedID}`} target="_blank" className="no-decorate">
                             <FontAwesomeIcon icon="fa-solid fa-share" />
                         </Link>
                     </button>

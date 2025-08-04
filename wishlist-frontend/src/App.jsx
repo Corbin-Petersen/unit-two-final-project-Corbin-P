@@ -83,9 +83,9 @@ function App() {
               } />
               <Route path=":listID" element={<ViewList setUserID={setUserID} userID={userID} userInfo={userInfo} userLists={userLists} isLoggedIn={isLoggedIn} />} />
             </Route>
-            <Route path="shared">
-              <Route path=":sharedID" element={<ShareList userID={userID} userInfo={userInfo} />} />
-            </Route>
+          </Route>
+          <Route path="shared">
+            <Route path=":sharedID" element={<ShareList userID={userID} userInfo={userInfo} />} />
           </Route>
         </Routes>
       <Footer />

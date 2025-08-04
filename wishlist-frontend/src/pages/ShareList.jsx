@@ -21,9 +21,6 @@ export default function ShareList( props ) {
     const listID = sharedID.slice(0, sharedID.indexOf("l"));
     const userID = sharedID.slice(sharedID.indexOf("u") + 1, sharedID.indexOf("s"));
 
-    console.log(listID);
-    console.log(userID);
-
     // Get current list from database
     const getSharedList = async () => {
         setIsLoading(true);
@@ -78,7 +75,7 @@ export default function ShareList( props ) {
     }, [userInfo]);
     useEffect(() => {
         if (!list)
-        getThisList();
+        getSharedList();
     }, [list]);
     useEffect(() => {
         if (items && items.length > 0) {
@@ -170,7 +167,7 @@ export default function ShareList( props ) {
                             </div>
                         </div>
                         <div id={`${item.id}-view`} className="modal-bg" >
-                            <ShareItem list={list} items={items} item={item} handleModal={handleModal} thisItem={thisItem} getThisList={getThisList} />
+                            <ShareItem list={list} items={items} item={item} handleModal={handleModal} thisItem={thisItem} />
                         </div>
                     </Fragment>
                     )) : (
