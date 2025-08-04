@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/{userId}/lists")
 public class WishlistController {
     // connect repositories
     @Autowired
@@ -23,7 +23,7 @@ public class WishlistController {
     UserRepository userRepository;
 
     // GET all lists for a user
-    @GetMapping(value = "/{userId}/lists", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAllLists(@PathVariable(value = "userId") int userId) {
         List<Wishlist> userLists = wishlistRepository.findAllByUserId(userId);
         if (userLists == null || userLists.isEmpty()) {
@@ -34,7 +34,7 @@ public class WishlistController {
     }
 
     // GET a specific list by ID
-    @GetMapping(value = "/{userId}/lists/{listId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{listId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getListById(@PathVariable(value = "listId") int listId) {
         Wishlist list = wishlistRepository.findById(listId).orElse(null);
         if (list == null) {
@@ -45,7 +45,7 @@ public class WishlistController {
     }
 
     // POST a new list
-    @PostMapping(value = "/{userId}/lists/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createNewList(@RequestBody WishlistDTO listData) {
         User user = userRepository.findById(listData.getUserId()).orElse(null);
         if (user == null) {
@@ -57,7 +57,7 @@ public class WishlistController {
     }
 
     // PUT to update an existing list
-    @PutMapping(value = "/{userId}/lists/{listId}/update", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{listId}/update", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateList(@PathVariable(value = "listId") int listId, @RequestBody WishlistDTO updatedList) {
         Wishlist existingList = wishlistRepository.findById(listId).orElse(null);
         if (existingList == null) {
@@ -72,7 +72,7 @@ public class WishlistController {
     }
 
     // DELETE a list
-    @DeleteMapping("/{userId}/lists/{listId}/delete")
+    @DeleteMapping("/{listId}/delete")
     public ResponseEntity<?> deleteList(@PathVariable(value = "listId") int listId) {
         Wishlist list = wishlistRepository.findById(listId).orElse(null);
         if (list == null) {
