@@ -29,8 +29,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private static final List<String> PUBLIC_URLS = List.of(
             "/api/user/register",
-            "/api/login",
-            "/api/send-reset",
+            "/api/user/login",
+            "/api/user/auth/**",
+            "/api/user/profile",
             "/api/items/scrape-img",
             "/api/shared/**"
     );

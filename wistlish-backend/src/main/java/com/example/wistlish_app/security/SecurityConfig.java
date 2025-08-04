@@ -58,7 +58,7 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults())
             .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity, enable in production
             .authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/items/scrape-img", "/api/user/register", "/api/login", "/api/send-reset","/api/shared/**")
+                .requestMatchers("/api/items/scrape-img", "/api/user/register", "/api/user/login", "/api/user/auth/**", "/api/user/profile", "/api/shared/**")
                 .permitAll().anyRequest().authenticated())
             .sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
