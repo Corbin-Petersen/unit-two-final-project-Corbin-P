@@ -74,6 +74,15 @@ public class UserController {
         }
     }
 
+    @GetMapping(value = "/shared/{userID}/info", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AuthResponse getListOwner(@PathVariable(value = "userID") int userID) {
+        User user = userService.findById(userID);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with id: " + userID);
+        }
+        return new AuthResponse(user.getId(), user.getFirstName(), user.getLastName());
+    }
+
     @GetMapping("/profile")
     public AuthResponse getProfile(@CurrentSecurityContext(expression = "authentication?.name") String email) {
         User existingUser = userService.findByEmail(email);
