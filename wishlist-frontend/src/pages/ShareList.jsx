@@ -18,104 +18,99 @@ export default function ShareList( props ) {
     const [ isLoading, setIsLoading ] = useState(false);
     const [ userInfo, setUserInfo] = useState(null);
     const [ claimToken, setClaimToken ] = useState(null);
-    const [ listID, setListID ] = useState(null);
-    const [ userID, setUserID ] = useState(null);
 
+    const listID = sharedID.slice(0, sharedID.indexOf("l"));
+    const userID = sharedID.slice(sharedID.indexOf("u") + 1, sharedID.indexOf("s"));
     
-    // Get current list from database
+    // UseEffect blocks
+    useEffect(() => {
+        if (!userInfo) getUser();
+    }, [userInfo]);
+    useEffect(() => {
+        if (!list) getSharedList();
+    }, [list]);
+    useEffect(() => {
+        if (items && items.length > 0) setHasItems(true); 
+    }, [items]);
+    useEffect(() => {
+        if (listID) manageToken();
+    }, [listID]);
+
+    // Set local token for claiming items
+    const manageToken = () => {
+        const storageKey = `claim_token_${listID}`;
+        let token = localStorage.getItem(storageKey);
+        if (!token) {
+            token = uuidv4();
+            localStorage.setItem(storageKey, token);
+        }    
+        setClaimToken(token);
+    }    
+
+    // GET current list from database
     const getSharedList = async () => {
         setIsLoading(true);
         try {
             const response = await fetch(`http://localhost:8080/api/shared/list/${listID}info`, {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json'}
-            });
+            });    
             const data = await response.json();
             if (response.status !== 200) {
                 throw new Error("Failed to fetch list");
-            }
+            }    
             setList(data);
             setItems(data.items);
         } catch (error) {
             console.error(error.message);
-            toast.error(error.message);
+            toast.error(error.message, {theme: "colored"});
         } finally {
             setIsLoading(false);
-        }
-    }
+        }    
+    }    
 
-    // get list owner's name for display
+    // GET list owner's name for display
     const getUser = async () => {
         setIsLoading(true);
         try {
             const response = await fetch(`http://localhost:8080/api/shared/user/${userID}info`, {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json'}
-            });
+            });    
             const data = await response.json();
             if (response.status !== 200) {
                 throw new Error("Failed to fetch list owner");
-            }
+            }    
             setUserInfo(data);
         } catch (error) {
             console.error(error.message);
             toast.error(error.message, {theme: "colored"});
         } finally {
             setIsLoading(false);
-        }
-    }
+        }    
+    }    
 
-    // Mark item as Claimed
-    const setClaimed = async () => {
+    // PUT Mark item as Claimed
+    const claimItem = async (itemId) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/items/${itemId}/update`, {
+            const response = await fetch(`http://localhost:8080/api/shared/${itemId}/update`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ claimToken })
-            });
+            });    
             const data = await response.json();
             if (response.status !== 200) {
                 throw new Error("Unable to update item status.");
-            }
+            }    
         } catch (error) {
             console.error(error);
             toast.error(error.message, {theme: "colored"});
-        }
-    }    
+        }    
+    }        
     
-    // UseEffect blocks
-    useEffect(() => {
-        setListID(sharedID.slice(0, sharedID.indexOf("l")));
-        setUserID(sharedID.slice(sharedID.indexOf("u") + 1, sharedID.indexOf("s")));
-    }, [])
-    useEffect(() => {
-        if (!userInfo)
-        getUser();
-    }, [userInfo]);
-    useEffect(() => {
-        if (!list)
-        getSharedList();
-    }, [list]);
-    useEffect(() => {
-        if (items && items.length > 0) {
-            setHasItems(true);
-        } 
-    }, [items]);
-    useEffect(() => {
-        if (listID) {
-            const storageKey = `claim_token_${listID}`;
-            let token = localStorage.getItem(storageKey);
-            if (!token) {
-                token = uuidv4();
-                localStorage.setItem(storageKey, token);
-            }
-            setClaimToken(token);
-        }
-    }, [listID]);
-
     const hasSpace = !hasItems ? 0 : items.length % 3;
 
-    // function to total cost of all items
+    // calculate total cost of all items
     const listCost = () => {
         if (hasItems) {
             let total = 0;
