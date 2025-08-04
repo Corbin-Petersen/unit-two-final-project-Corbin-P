@@ -75,4 +75,25 @@ public class ShareController {
         itemRepository.save(existingItem);
         return ResponseEntity.ok(existingItem);
     }
+
+    // PUT - ADMIN update existing item and toggle it's claimed status
+    @PutMapping(value="/{itemId}/admin", produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> toggleClaimed(@PathVariable(value = "itemId") int itemId) {
+        Item existingItem = itemRepository.findById(itemId).orElse(null);
+
+        if (existingItem == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item with ID: " + itemId + " not found.");
+        }
+        if (existingItem.getIsClaimed()) {
+            // Unclaim it and clear any non-user token
+            existingItem.setIsClaimed(false);
+            existingItem.setClaimToken(null);
+        } else {
+            // Claim it without adding token - will only be editable by admin
+            existingItem.setIsClaimed(true);
+        }
+
+        itemRepository.save(existingItem);
+        return ResponseEntity.ok(existingItem);
+    }
 }
