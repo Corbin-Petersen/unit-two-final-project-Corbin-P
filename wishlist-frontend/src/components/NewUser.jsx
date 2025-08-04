@@ -50,25 +50,25 @@ export default function NewUser( props ) {
     }
 
     return (
-        <div className="modal make-new col">
+        <div id="new-user" className="modal col">
             <button className="close square" onClick={closeModal}><i className="fa-solid fa-xmark"></i></button>
-            <div id="">
-                <h2>Sign up to get started!</h2>
-            </div>
+            <h2 id="register-h1">Sign up to get started!</h2>
             <form name="registration-form" id="register" className="col" method="post" onSubmit={registerUser}>
                 <h3>USER DETAILS</h3>
-                <label>FIRST NAME
-                    <input type="text" id="new-fname" name="firstName" placeholder="First Name" onChange={handleChange} />
-                </label>
-                <label>LAST NAME
-                    <input type="text" id="new-lname" name="lastName" placeholder="Last Name" onChange={handleChange} />
-                </label>
-                <label>EMAIL
-                    <input type="email" id="new-email" name="email" placeholder="valid@email.com" onChange={handleChange} />
-                </label>
-                <label>PASSWORD
-                    <input type="password" id="new-pass" name="userPass" autoComplete="set password" onChange={handleChange} />
-                </label>
+                <div id="register-fields">
+                    <label>FIRST NAME
+                        <input type="text" id="new-fname" name="firstName" placeholder="First Name" onChange={handleChange} />
+                    </label>
+                    <label>LAST NAME
+                        <input type="text" id="new-lname" name="lastName" placeholder="Last Name" onChange={handleChange} />
+                    </label>
+                    <label>EMAIL
+                        <input type="email" id="new-email" name="email" placeholder="valid@email.com" onChange={handleChange} />
+                    </label>
+                    <label>PASSWORD
+                        <input type="password" id="new-pass" name="userPass" autoComplete="set password" onChange={handleChange} />
+                    </label>
+                </div>
                 <button className="submit-btn">REGISTER</button>
             </form>        
         </div>

@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import Error from "../components/Error";
 import NewUser from "../components/NewUser";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
 
 export default function Home( props ) {
     
@@ -14,7 +13,6 @@ export default function Home( props ) {
     const [ loginPass, setLoginPass ] = useState(null);
     const [ modalDiv, setModalDiv ] = useState(null);
     const [ isLoading, setIsLoading ] = useState(false);
-    // const loginError = useRef(0);  ---------> (I don't think I need this anymore)
     const registerUser = useRef(0);
     const navigate = useNavigate();
         
@@ -48,12 +46,8 @@ export default function Home( props ) {
         e.preventDefault();
         setIsLoading(true);
 
-        let response;
-        let data;
-
         try {
-            // login API
-            response = await fetch(`http://localhost:8080/api/user/login`, {
+            const response = await fetch(`http://localhost:8080/api/user/login`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -61,17 +55,16 @@ export default function Home( props ) {
                 },
                 body: JSON.stringify({ username: loginUser, password: loginPass })
             });
+            const data = await response.json();
             if (response.ok) {
-                // handle successful login
-                data = await response.json();
                 saveUser(data);
                 navigate(`/${data.id}/lists`);
             } else {
-                // handle error response
                 toast.error("Oops! Incorrect Username or Password. Please try again.", { theme: "colored" });
             }
         } catch (error) {
-            toast.error(error);
+            console.error(error);
+            toast.error(error.message);
         } finally {
             setIsLoading(false);
         }
@@ -105,11 +98,6 @@ export default function Home( props ) {
                 <div>
                     <p>Don't have an account? <span className="emphasis" style={{cursor: "pointer"}} onClick={() => openModal(registerUser)}>Sign up here!</span></p>
                 </div>
-                {/* ---------> (I don't think I need this anymore)
-                <div id="modal-error" className="modal-bg" ref={loginError}>
-                    <Error closeModal={closeModal} />
-                </div> 
-                */}
                 <div className="modal-bg" ref={registerUser}>
                     <NewUser closeModal={closeModal} modalDiv={modalDiv} />
                 </div>

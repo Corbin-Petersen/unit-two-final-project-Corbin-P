@@ -7,8 +7,6 @@
 }
 
 body {
-    font-family: "Outfit", sans-serif;
-    font-optical-sizing: auto;
     margin: 0;
     padding: 0;
     height: 100vw;
@@ -36,6 +34,49 @@ header {
     align-items: center;
     width: 75vw;
 }
+
+footer {
+    width: 100%;
+    background-color: #002c59;
+    color: white;
+    align-items: center;
+}
+#footer-info {
+    width: 75vw;
+    padding: 50px 20px;
+}
+
+.component {
+    width: 75vw;
+    height: auto;
+    padding: 0 20px;
+    background-color: white;
+    align-items: center;
+    margin-bottom: 75px;
+}
+.home-component {
+    display: flex;
+    flex-direction: row;
+    width: 75vw;
+    height: auto;
+    padding: 0 20px;
+    background-color: white;
+    align-items: center;
+}
+
+.reset {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+
+/* -----------------------------------
+------------- NAVIGATION -------------
+----------------------------------- */
 
 nav {
     width: 100%;
@@ -86,47 +127,10 @@ nav .menu .fa-bars {
     margin: auto;
 }
 
-footer {
-    width: 100%;
-    background-color: #002c59;
-    color: white;
-    align-items: center;
-}
-#footer-info {
-    width: 75vw;
-    padding: 50px 20px;
-}
-
-.component {
-    width: 75vw;
-    height: auto;
-    padding: 0 20px;
-    background-color: white;
-    align-items: center;
-    margin-bottom: 75px;
-}
-.home-component {
-    display: flex;
-    flex-direction: row;
-    width: 75vw;
-    height: auto;
-    padding: 0 20px;
-    background-color: white;
-    align-items: center;
-}
-
-.reset {
-    display: flex;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-}
-
 
 
 /* ------------------------------------
------------ FLEXBOX CONTENT -----------
+----------- FLEXBOX DEFAULT -----------
 ------------------------------------ */
 
 .row {
@@ -150,6 +154,11 @@ footer {
 /* -----------------------------------
 ------------ FONT STYLING ------------
 ----------------------------------- */
+
+body {
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+}
 
 .emphasis {
     font-weight: bold;
@@ -250,7 +259,9 @@ button:hover {
     transition: all 300ms;
 }
 
-.claim-btn, .claimed-btn, .claimed-disabled {
+.claim-btn, 
+.claimed-btn, 
+.claimed-disabled {
     height: 35px;
     flex-wrap: nowrap;
     overflow: hidden;
@@ -258,7 +269,9 @@ button:hover {
     align-items: center;
     transition: all 250ms;
 }
-.claim-btn > span, .claimed-btn > span, .claimed-disabled > span {
+.claim-btn > span, 
+.claimed-btn > span, 
+.claimed-disabled > span {
     white-space: nowrap;
     font-size: small;
     margin: auto 2px;
@@ -375,7 +388,7 @@ img {
 
 
 /* -----------------------------------
---------------- MODALS ---------------
+----------- MODAL DEFAULTS -----------
 ----------------------------------- */
 
 .modal-bg {
@@ -401,7 +414,6 @@ img {
     margin-top: 5vh;
     position: absolute;
     background-color: #e7e7e7;
-    color: rgb(179, 0, 0);
     text-align: center;
     justify-content: stretch;
     pointer-events: auto;
@@ -458,6 +470,7 @@ input, textarea {
 label {
     display: flex;
     flex-direction: column;
+    margin: 12px 0;
 }    
 
 
@@ -491,6 +504,7 @@ label {
     width: 300px;
     margin: auto;
     padding-bottom: 50px;
+    text-align: left;
 }
 
 #login-user, #login-pass {
@@ -499,11 +513,29 @@ label {
     margin: 5px 0;
 }
 
-#login-error p {
-    margin: 0 0;
-    padding: 0 50px 20px 50px;
+#new-user {
+    width: 325px;
+    margin-top: 10vh;
+    background-color: #f2f1f1;
 }
-
+#register-h1 {
+    margin: 0 auto;
+    padding-top: 0;
+}
+#register {
+    text-align: center;  
+    margin-bottom: 0;  
+}
+#register > h3 {
+    margin: 10px 0;
+}
+#register-fields {
+    border: 2px solid white;
+    border-radius: 5px;
+    background-color: white;
+    text-align: left;    
+    padding: 10px;
+}
 
 
 
@@ -689,11 +721,6 @@ label {
     width: 30%;
     margin: 10px auto;
 }
-
-
-/*
-.item-block-text
-*/
 
 
 
