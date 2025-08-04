@@ -22,6 +22,7 @@ public class Item {
     private BigDecimal cost;
     @Column(columnDefinition = "TINYINT") // Using TINYINT for boolean in MySQL
     private boolean isClaimed;
+    private String claimToken;
     private LocalDate createdOn;
 
     @ManyToOne
@@ -105,5 +106,13 @@ public class Item {
 
     public void setList(Wishlist list) {
         this.list = list;
+    }
+
+    public String getClaimToken() {
+        return claimToken;
+    }
+
+    public void setClaimToken(String claimToken) {
+        this.claimToken = claimToken;
     }
 }

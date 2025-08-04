@@ -99,18 +99,6 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newItem);
     }
 
-    // PUT to update an existing item and toggle it's claimed status
-    @PutMapping(value="/{itemId}/update", produces=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> toggleClaimed(@PathVariable(value = "itemId") int itemId) {
-        Item existingItem = itemRepository.findById(itemId).orElse(null);
-        if (existingItem == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item with ID: " + itemId + " not found.");
-        }
-        existingItem.setIsClaimed(!existingItem.getIsClaimed());
-        itemRepository.save(existingItem);
-        return ResponseEntity.ok(existingItem);
-    }
-
     // DELETE an item
     @DeleteMapping("/{itemId}/delete")
     public ResponseEntity<?> deleteItem(@PathVariable(value = "itemId") int itemId) {

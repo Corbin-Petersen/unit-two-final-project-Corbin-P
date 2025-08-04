@@ -1,8 +1,10 @@
 package com.example.wistlish_app.controllers;
 
+import com.example.wistlish_app.models.Item;
 import com.example.wistlish_app.models.User;
 import com.example.wistlish_app.models.Wishlist;
 import com.example.wistlish_app.models.dto.AuthResponse;
+import com.example.wistlish_app.repositories.ItemRepository;
 import com.example.wistlish_app.repositories.UserRepository;
 import com.example.wistlish_app.repositories.WishlistRepository;
 import com.example.wistlish_app.service.UserService;
@@ -10,10 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/shared")
@@ -25,6 +26,8 @@ public class ShareController {
     UserService userService;
     @Autowired
     WishlistRepository wishlistRepository;
+    @Autowired
+    ItemRepository itemRepository;
 
     @GetMapping(value = "/user/{userID}info", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getListOwner(@PathVariable(value = "userID") int userID) {
@@ -45,5 +48,31 @@ public class ShareController {
         } else {
             return ResponseEntity.ok(list);
         }
+    }
+
+    // PUT to update an existing item and toggle it's claimed status
+    @PutMapping(value="/{itemId}/update", produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> toggleClaimed(@PathVariable(value = "itemId") int itemId, @RequestBody Map<String, String> payload) {
+        Item existingItem = itemRepository.findById(itemId).orElse(null);
+        String token = payload.get("claimToken");
+
+        if (existingItem == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item with ID: " + itemId + " not found.");
+        }
+        if (existingItem.getIsClaimed()) {
+            if (!existingItem.getClaimToken().equals(token)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Item already claimed.");
+            }
+            // Unclaim it
+            existingItem.setIsClaimed(false);
+            existingItem.setClaimToken(null);
+        } else {
+            // Claim it
+            existingItem.setIsClaimed(true);
+            existingItem.setClaimToken(token);
+        }
+
+        itemRepository.save(existingItem);
+        return ResponseEntity.ok(existingItem);
     }
 }
