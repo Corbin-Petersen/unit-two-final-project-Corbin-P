@@ -9,7 +9,7 @@ export default function Item( props ) {
     // get params, refs, states, & props
     const confirmDialog = useRef(null);
     const [ confirmOpen, setConfirmOpen ] = useState(false);
-    const { list, setList, items, setItems, item, handleModal, thisItem, getThisList } = props;
+    const { items, setItems, item, handleModal, thisItem, claimed, setClaimed, manageClaimedAdmin } = props;
 
     // function to handle confirm popup
     const handleConfirm = () => {
@@ -46,7 +46,7 @@ export default function Item( props ) {
                 throw new Error("Failed to delete item");
             }
             let refreshList = items.splice(itemIndex, 1);
-            setList(refreshList);
+            setItems(refreshList);
             toast.success("Item deleted successfully", {theme: "colored"});
         } catch (error) {
             console.error(error.message);
@@ -56,22 +56,11 @@ export default function Item( props ) {
         handleModal(thisItem);
     }
         
-        // // capture indexes of current item, listItems, and userInfo
-        // const itemIndex = userList.listItems.findIndex((i) => i.itemID === item.itemID);
-        // const listIndex = userInfo.lists.findIndex((i) => i.listID === userList.listID);
-        // const userIndex = data.findIndex((i) => i.userID === userInfo.userID);
-
-        // // remove item from userList inside userInfo inside data
-        // data[userIndex].lists[listIndex].listItems.splice(itemIndex, 1);
-
-        // // update localStorage
-        // localStorage.setItem('fakeData', JSON.stringify(data));
-
-    
-
     return (
         <div id="view-item" className="modal col" >
-            <button className="close square" onClick={(e) => handleModal(e.currentTarget.closest(".modal-bg"))}><i className="fa-solid fa-xmark"></i></button>
+            <button className="close square" onClick={(e) => handleModal(e.currentTarget.closest(".modal-bg"))}>
+                <FontAwesomeIcon icon="fa-solid fa-xmark" />
+            </button>
             <div id="item-container" className="col" style={{pointerEvents: confirmOpen ? "none" : "auto"}}>
                 <div id="item-img">
                     <img src={item.imageUrl == "" ? "/default-img.png" : item.imageUrl} className="img-reg" alt={`${item.name}`} />
@@ -80,11 +69,23 @@ export default function Item( props ) {
                     <h2>{item.name}</h2>
                     <h3 className="price">${item.cost}</h3><br/>
                 <div id="item-btns" className="row">
-                    {item.quantity > 1 && 
-                        <p className="needed">QUANTITY: <span className="num-needed">{item.quantity}</span></p>
+                    <p className="needed">QUANTITY: <span className="num-needed">{item.quantity}</span></p>
+                    {!claimed ? (
+                            <button id="claim-item" className="claim-btn row" title="claim item" onClick={() => manageClaimedAdmin(item.id)}>
+                                <FontAwesomeIcon icon="fa-solid fa-user-tag" /><span>CLAIM ITEM</span>
+                            </button>
+                        ) : (
+                            <button id="claim-item" className="claimed-btn row" title="claim item" onClick={() => manageClaimedAdmin(item.id)}>
+                                <FontAwesomeIcon icon="fa-solid fa-tag" /><span>CLAIMED!</span>
+                            </button>
+                        )
                     }
-                    <button id="delete-item-btn" className="delete-item square" title="delete item" onClick={handleConfirm}><i className="fa-solid fa-trash-can"></i></button>
-                    <button id="go-to-item" className="square" title="link to item" onClick={() => window.open(item.itemUrl, '_blank')}><i className="fa-solid fa-up-right-from-square"></i></button>
+                    <button id="delete-item-btn" className="delete-item square" title="delete item" onClick={handleConfirm}>
+                        <FontAwesomeIcon icon="fa-solid fa-trash-can" />
+                    </button>
+                    <button id="go-to-item" className="square" title="link to item" onClick={() => window.open(item.itemUrl, '_blank')}>
+                        <FontAwesomeIcon icon="fa-solid fa-up-right-from-square" />
+                    </button>
                 </div>
                 </div>
             </div>

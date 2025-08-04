@@ -245,10 +245,49 @@ button:hover {
 .cancel:hover {
     background-color: rgb(255, 60, 60);
 }
-
 .copy span {
     color: black;
     transition: all 300ms;
+}
+.claim-btn, .claimed-btn, .claimed-disabled {
+    height: 35px;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    justify-content: flex-start;
+    align-items: center;
+    transition: all 250ms;
+}
+.claim-btn > span, .claimed-btn > span, .claimed-disabled > span {
+    white-space: nowrap;
+    font-size: small;
+    margin: auto 2px;
+    transition: all 250ms;
+}
+.claim-btn {
+    width: 35px;
+}
+.claim-btn > span {
+    opacity: 0;
+}
+.claim-btn:hover {
+    width: 125px;
+}
+.claim-btn:hover > span {
+    opacity: 1;
+}
+.claimed-btn {
+    background-color: #96ff96;
+    width: 110px;
+}
+.claimed-btn:hover {
+    background-color: #5dff5d;
+}
+.claimed-disabled {
+    background-color: #add8ad;
+    width: 35px;
+}
+.claimed-disabled > span {
+    color: #4e4e4e;
 }
 
 
@@ -626,18 +665,19 @@ label {
     color: green;
 }
 
-.list-need {
+.claimed-item {
     text-align: right;
     align-content: center;
     padding: 5px 10px;
     margin: 0;
-    background-image: linear-gradient(to right, transparent, rgb(119, 143, 184));
+    background-image: linear-gradient(to right, transparent, rgb(119, 184, 125));
     border-radius: 0 0 10px 10px;
     color: white;
 }
 
 .list-need-num {
-    font-weight: bolder;
+    text-align: right;
+    margin-left: auto;
 }
 
 .space1 {
@@ -686,6 +726,7 @@ label {
 }
 
 #item-btns {
+    display: flex;
     width: 100%;
     justify-content: flex-end;
 }

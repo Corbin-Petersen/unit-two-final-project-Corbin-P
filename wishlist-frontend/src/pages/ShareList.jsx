@@ -18,6 +18,7 @@ export default function ShareList( props ) {
     const [ isLoading, setIsLoading ] = useState(false);
     const [ userInfo, setUserInfo] = useState(null);
     const [ claimToken, setClaimToken ] = useState(null);
+    const [ claimed, setClaimed ] = useState(false);
 
     const listID = sharedID.slice(0, sharedID.indexOf("l"));
     const userID = sharedID.slice(sharedID.indexOf("u") + 1, sharedID.indexOf("s"));
@@ -91,7 +92,10 @@ export default function ShareList( props ) {
     }    
 
     // PUT Mark item as Claimed
-    const claimItem = async (itemId) => {
+    const manageClaimed = async (itemId) => {
+        //capture index of current item
+        const itemIndex = items.findIndex((i) => i.id === itemId);
+
         try {
             const response = await fetch(`http://localhost:8080/api/shared/${itemId}/update`, {
                 method: 'PUT',
@@ -101,7 +105,11 @@ export default function ShareList( props ) {
             const data = await response.json();
             if (response.status !== 200) {
                 throw new Error("Unable to update item status.");
-            }    
+            }
+            // update claimed status and saved token
+            items[itemIndex].isClaimed = data.isClaimed;
+            items[itemIndex].claimToken = data.claimToken;
+            setClaimed(!claimed);
         } catch (error) {
             console.error(error);
             toast.error(error.message, {theme: "colored"});
@@ -130,7 +138,6 @@ export default function ShareList( props ) {
         let total = items.length;
         return total;
     }
-
 
     // function to handle modals
     const handleModal = (divRef) => {
@@ -182,17 +189,19 @@ export default function ShareList( props ) {
                     <Fragment key={`${item.id}`}>
                         <div id={`${item.id}`} className="item col" onClick={(e) => handleModal(e.currentTarget.nextElementSibling)} style={{pointerEvents: isVisible ? "none" : "auto"}}>
                             <div className="item-block-img" style={{backgroundImage: item.imageUrl == "" ? "/src/assets/default-img.png" : `url(${item.imageUrl})`}}>
-                            {item.quantity > 1 && 
-                                <p className="list-need">QUANTITY: <span className="list-need-num">{item.quantity}</span></p>
+                            {item.isClaimed && 
+                                <p className="claimed-item">CLAIMED!</p>
                             }
                             </div>
                             <div className="item-block-text">
                                 <h4>{item.name}</h4>
-                                <p className="price">${item.cost}</p>
+                                <div className="row">
+                                    <p className="price">${item.cost.toFixed(2)}</p> <p className="list-need-num">QUANTITY: &nbsp;<span className="num-needed">{item.quantity}</span></p>
+                                </div>
                             </div>
                         </div>
                         <div id={`${item.id}-view`} className="modal-bg" >
-                            <ShareItem list={list} items={items} item={item} handleModal={handleModal} thisItem={thisItem} />
+                            <ShareItem item={item} handleModal={handleModal} thisItem={thisItem} manageClaimed={manageClaimed} claimToken={claimToken} setClaimToken={setClaimToken} claimed={claimed} setClaimed={setClaimed} />
                         </div>
                     </Fragment>
                     )) : (

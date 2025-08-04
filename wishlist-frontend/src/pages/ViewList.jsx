@@ -21,6 +21,26 @@ export default function ViewList( props ) {
     const [ isLoading, setIsLoading ] = useState(false);
     const navigate = useNavigate();
     
+    // USE EFFECT BLOCKS
+    useEffect(() => {
+        setUserID(userId);
+    }, [])
+    useEffect(() => {
+        if (!list) {
+            getThisList();
+        }
+    }, [list]);
+    useEffect(() => {
+        if (items && items.length > 0) {
+            setHasItems(true);
+        } 
+    }, [items]);
+    useEffect(() => {
+        setTimeout(() => {
+            setCopied(false);
+        }, 1000)
+    }, [copied]);
+        
     // Get current list from database
     const getThisList = async () => {
         setIsLoading(true);
@@ -45,26 +65,6 @@ export default function ViewList( props ) {
         setIsLoading(false);
     }
 
-    // USE EFFECT BLOCKS
-    useEffect(() => {
-        setUserID(userId);
-    }, [])
-    useEffect(() => {
-        if (!list) {
-            getThisList();
-        }
-    }, [list]);
-    useEffect(() => {
-        if (items && items.length > 0) {
-            setHasItems(true);
-        } 
-    }, [items]);
-    useEffect(() => {
-        setTimeout(() => {
-            setCopied(false);
-        }, 1000)
-    }, [copied]);
-        
 
     // function to check if items need extra spacers
     const hasSpace = !hasItems ? 0 : items.length % 3;
