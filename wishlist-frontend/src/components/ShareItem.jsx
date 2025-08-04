@@ -9,7 +9,7 @@ export default function ShareItem( props ) {
     const { userID, listID } = useParams();
     const confirmDialog = useRef(null);
     const [ confirmOpen, setConfirmOpen ] = useState(false);
-    const { data, userInfo, userList, item, handleModal, thisItem, setThisItem } = props;
+    const { list, items, item, handleModal } = props;
 
 
     return (

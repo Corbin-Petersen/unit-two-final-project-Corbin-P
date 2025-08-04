@@ -71,7 +71,7 @@ export default function NewImage ( props) {
         <div id="new-image" >
             { !hasImages ? (
                 isLoading ? (
-                    <FontAwesomeIcon icon="fa-solid fa-gear" spin size="2xl" />
+                    <h1><FontAwesomeIcon icon="fa-solid fa-gear" spin size="2xl" /> loading images</h1>
                 ) : (
                     <img src={formInfo.imageUrl !== "" ? formInfo.imageUrl : "/default-img.png"} className="img-new" />
                 )

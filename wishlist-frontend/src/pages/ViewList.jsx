@@ -110,7 +110,7 @@ export default function ViewList( props ) {
         setCopied(true);
     }    
 
-    const sharedID = `${listID}${Math.floor(Math.random() * 90) + 10}share`;
+    const sharedID = `${listID}l${Math.floor(Math.random() * 90) + 10}u${userId}share`;
 
 
     // function to handle modals

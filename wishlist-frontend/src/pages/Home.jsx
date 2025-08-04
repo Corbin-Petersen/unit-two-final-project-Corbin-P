@@ -53,7 +53,7 @@ export default function Home( props ) {
 
         try {
             // login API
-            response = await fetch(`http://localhost:8080/api/login`, {
+            response = await fetch(`http://localhost:8080/api/user/login`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

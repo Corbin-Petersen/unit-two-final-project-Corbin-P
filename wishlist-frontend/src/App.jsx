@@ -40,7 +40,7 @@ function App() {
     let response;
     let data;
     
-    response = await fetch(`http://localhost:8080/api/auth/${currentID}`, {
+    response = await fetch(`http://localhost:8080/api/user/auth/${currentID}`, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -55,7 +55,7 @@ function App() {
   };
 
   const setCurrentUser = async () => {
-    const res = await fetch(`http://localhost:8080/api/profile`, {
+    const res = await fetch(`http://localhost:8080/api/user/profile`, {
       credentials: 'include'
     });
     const data = await res.json();
@@ -84,7 +84,7 @@ function App() {
               <Route path=":listID" element={<ViewList setUserID={setUserID} userID={userID} userInfo={userInfo} userLists={userLists} isLoggedIn={isLoggedIn} />} />
             </Route>
             <Route path="shared">
-              <Route path=":sharedID" element={<ShareList userInfo={userInfo} userLists={userLists} />} />
+              <Route path=":sharedID" element={<ShareList userID={userID} userInfo={userInfo} />} />
             </Route>
           </Route>
         </Routes>
