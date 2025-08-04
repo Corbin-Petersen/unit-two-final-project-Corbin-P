@@ -75,12 +75,13 @@ public class UserController {
     }
 
     @GetMapping(value = "/shared/{userID}/info", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AuthResponse getListOwner(@PathVariable(value = "userID") int userID) {
+    public ResponseEntity<?> getListOwner(@PathVariable(value = "userID") int userID) {
         User user = userService.findById(userID);
+        AuthResponse userInfo = new AuthResponse(user.getId(), user.getFirstName(), user.getLastName());
         if (user == null) {
-            throw new UsernameNotFoundException("User not found with id: " + userID);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID: " + userID + " not found.");
         }
-        return new AuthResponse(user.getId(), user.getFirstName(), user.getLastName());
+        return ResponseEntity.ok(userInfo);
     }
 
     @GetMapping("/profile")
