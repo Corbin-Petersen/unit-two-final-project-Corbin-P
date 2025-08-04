@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 public class UserController {
 
     @Autowired
@@ -38,7 +38,7 @@ public class UserController {
     JwtUtil jwtUtil;
 
     // Register a new user
-    @PostMapping(value = "/user/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createNewUser(@Valid @RequestBody UserDTO userData) {
         User existingUser = userService.findByEmail(userData.getEmail());
         if (existingUser != null) {
@@ -74,16 +74,6 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/shared/{userID}/info", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getListOwner(@PathVariable(value = "userID") int userID) {
-        User user = userService.findById(userID);
-        AuthResponse userInfo = new AuthResponse(user.getId(), user.getFirstName(), user.getLastName());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID: " + userID + " not found.");
-        }
-        return ResponseEntity.ok(userInfo);
-    }
-
     @GetMapping("/profile")
     public AuthResponse getProfile(@CurrentSecurityContext(expression = "authentication?.name") String email) {
         User existingUser = userService.findByEmail(email);
@@ -96,7 +86,7 @@ public class UserController {
     public record LoginRequest(String username, String password) {
     }
 
-    @GetMapping(value = "/api/auth/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/auth/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getCurrentUser(HttpServletRequest request, @PathVariable(value = "userId") int userId ) {
         String token = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
                 .filter(c -> "jwt".equals(c.getName()))

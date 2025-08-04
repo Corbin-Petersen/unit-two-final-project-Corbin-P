@@ -30,7 +30,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/user/register",
             "/api/login",
             "/api/send-reset",
-            "/api/items/scrape-img"
+            "/api/items/scrape-img",
+            "/api/shared/**"
     );
 
     @Override

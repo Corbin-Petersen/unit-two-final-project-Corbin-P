@@ -58,26 +58,12 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults())
             .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity, enable in production
             .authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/items/scrape-img", "/api/user/register", "/api/login", "/api/send-reset","api/shared/*").permitAll()
-                .anyRequest().authenticated())
+                .requestMatchers("/api/items/scrape-img", "/api/user/register", "/api/login", "/api/send-reset","/api/shared/**")
+                .permitAll().anyRequest().authenticated())
             .sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .logout(AbstractHttpConfigurer::disable)
             .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-//            .httpBasic(Customizer.withDefaults())
-//            .formLogin((form) -> form
-//                .loginPage("/")
-//                .permitAll())
-//            .oneTimeTokenLogin((ott) -> ott
-//                .showDefaultSubmitPage(false)
-//                .tokenGeneratingUrl("/login/ott")
-//            )
-//            .logout((logout) -> logout
-//                .logoutSuccessUrl("/")
-//            )
-//            .csrf((csrf) -> csrf
-//                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
         return http.build();
     }
 
