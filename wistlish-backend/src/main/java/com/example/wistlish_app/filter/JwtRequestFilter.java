@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -34,13 +35,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/api/shared/**"
     );
 
+    private static final AntPathMatcher pathMatcher = new AntPathMatcher();
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String path = request.getServletPath();
-        if (PUBLIC_URLS.contains(path)) {
-            filterChain.doFilter(request, response);
-            return;
+
+        // Allow public paths without authentication
+        for (String publicPath : PUBLIC_URLS) {
+            if (pathMatcher.match(publicPath, path)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
 
         String jwtToken = null;
@@ -53,14 +60,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         // 2. If not in the header, check for a cookie
-        if (jwtToken == null) {
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals("jwt")) {
-                        jwtToken = cookie.getValue();
-                        break;
-                    }
+        if (jwtToken == null && request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals("jwt")) {
+                    jwtToken = cookie.getValue();
+                    break;
                 }
             }
         }
