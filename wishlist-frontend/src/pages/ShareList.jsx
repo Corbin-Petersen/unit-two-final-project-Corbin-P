@@ -4,6 +4,7 @@ import ShareItem from "../components/ShareItem";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { toast } from "react-toastify";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function ShareList( props ) {
     // pull in params and set variables
@@ -16,20 +17,18 @@ export default function ShareList( props ) {
     const [ items, setItems ] = useState(null);
     const [ isLoading, setIsLoading ] = useState(false);
     const [ userInfo, setUserInfo] = useState(null);
+    const [ claimToken, setClaimToken ] = useState(null);
+    const [ listID, setListID ] = useState(null);
+    const [ userID, setUserID ] = useState(null);
 
     
-    const listID = sharedID.slice(0, sharedID.indexOf("l"));
-    const userID = sharedID.slice(sharedID.indexOf("u") + 1, sharedID.indexOf("s"));
-
     // Get current list from database
     const getSharedList = async () => {
         setIsLoading(true);
         try {
             const response = await fetch(`http://localhost:8080/api/shared/list/${listID}info`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                headers: {'Content-Type': 'application/json'}
             });
             const data = await response.json();
             if (response.status !== 200) {
@@ -51,9 +50,7 @@ export default function ShareList( props ) {
         try {
             const response = await fetch(`http://localhost:8080/api/shared/user/${userID}info`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                headers: {'Content-Type': 'application/json'}
             });
             const data = await response.json();
             if (response.status !== 200) {
@@ -67,8 +64,30 @@ export default function ShareList( props ) {
             setIsLoading(false);
         }
     }
-    
 
+    // Mark item as Claimed
+    const setClaimed = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/items/${itemId}/update`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ claimToken })
+            });
+            const data = await response.json();
+            if (response.status !== 200) {
+                throw new Error("Unable to update item status.");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(error.message, {theme: "colored"});
+        }
+    }    
+    
+    // UseEffect blocks
+    useEffect(() => {
+        setListID(sharedID.slice(0, sharedID.indexOf("l")));
+        setUserID(sharedID.slice(sharedID.indexOf("u") + 1, sharedID.indexOf("s")));
+    }, [])
     useEffect(() => {
         if (!userInfo)
         getUser();
@@ -82,6 +101,17 @@ export default function ShareList( props ) {
             setHasItems(true);
         } 
     }, [items]);
+    useEffect(() => {
+        if (listID) {
+            const storageKey = `claim_token_${listID}`;
+            let token = localStorage.getItem(storageKey);
+            if (!token) {
+                token = uuidv4();
+                localStorage.setItem(storageKey, token);
+            }
+            setClaimToken(token);
+        }
+    }, [listID]);
 
     const hasSpace = !hasItems ? 0 : items.length % 3;
 
