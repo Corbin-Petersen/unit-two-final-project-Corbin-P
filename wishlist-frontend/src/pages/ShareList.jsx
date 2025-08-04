@@ -1,15 +1,13 @@
-import { useEffect, useRef, useState, Fragment } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { useParams } from "react-router";
 import ShareItem from "../components/ShareItem";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from 'uuid';
 
 export default function ShareList( props ) {
     // pull in params and set variables
     const { sharedID } = useParams();
-    const viewItemModal = useRef(null);
     const [ isVisible, setIsVisible ] = useState(false);
     const [ hasItems, setHasItems ] = useState(false);
     const [ thisItem, setThisItem ] = useState(null);
@@ -20,9 +18,13 @@ export default function ShareList( props ) {
     const [ claimToken, setClaimToken ] = useState(null);
     const [ claimed, setClaimed ] = useState(false);
 
+    // Pull listID and userID from sharedID
     const listID = sharedID.slice(0, sharedID.indexOf("l"));
     const userID = sharedID.slice(sharedID.indexOf("u") + 1, sharedID.indexOf("s"));
-    
+  
+    // Determine if list needs added spacer for alignment
+    const hasSpace = !hasItems ? 0 : items.length % 3;
+
     // UseEffect blocks
     useEffect(() => {
         if (!userInfo) getUser();
@@ -115,8 +117,6 @@ export default function ShareList( props ) {
             toast.error(error.message, {theme: "colored"});
         }    
     }        
-    
-    const hasSpace = !hasItems ? 0 : items.length % 3;
 
     // calculate total cost of all items
     const listCost = () => {

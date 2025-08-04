@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import Item from "./Item";
 
 export default function ListItem ( props ) {
-    const { list, setList, items, setItems, userList, item, handleModal, isVisible, thisItem, getThisList } = props;
+    const { items, setItems, userList, item, handleModal, isVisible, thisItem } = props;
     const [ claimed, setClaimed ] =useState(false);
 
     useEffect(() => {

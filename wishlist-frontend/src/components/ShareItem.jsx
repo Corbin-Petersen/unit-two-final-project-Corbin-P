@@ -1,17 +1,14 @@
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
 import { toast } from "react-toastify";
 
 export default function ShareItem( props ) {
     
-    // get params, refs, states, & props
-    const { userID, listID } = useParams();
-    const confirmDialog = useRef(null);
+    // set states & get props
     const [ confirmOpen, setConfirmOpen ] = useState(false);
     const { item, handleModal, manageClaimed, claimToken, claimed, setClaimed } = props;
 
+    // USE EFFECT
     useEffect(() => {
         if (item.isClaimed) setClaimed(true);
     }, [claimed]);

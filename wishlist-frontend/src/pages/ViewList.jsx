@@ -1,17 +1,14 @@
-import { useEffect, useRef, useState, Fragment } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import NewItem from "../components/NewItem";
 import ListItem from "../components/ListItem";
-import Item from "../components/Item";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { toast } from "react-toastify";
 
 export default function ViewList( props ) {
-    // pull in params and set variables
+    // pull in params and set state variables
     const { userId, listID } = useParams();
     const { setUserID, userInfo } = props;
-    const newItemModal = useRef(null);
-    const viewItemModal = useRef(null);
     const [ isVisible, setIsVisible ] = useState(false);
     const [ hasItems, setHasItems ] = useState(false);
     const [ thisItem, setThisItem ] = useState(null);
@@ -19,6 +16,7 @@ export default function ViewList( props ) {
     const [ list, setList ] = useState(null);
     const [ items, setItems ] = useState(null);
     const [ isLoading, setIsLoading ] = useState(false);
+    const newItemModal = useRef(null);
     const navigate = useNavigate();
     
     // USE EFFECT BLOCKS
@@ -61,14 +59,15 @@ export default function ViewList( props ) {
         } catch (error) {
             console.error(error.message);
             toast.error(error.message);
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     }
-
 
     // function to check if items need extra spacers
     const hasSpace = !hasItems ? 0 : items.length % 3;
 
+    // Calculate total number of items, if any exist
     const listTotal = () => {
         let zero = 0;
         if (!hasItems) return zero;
@@ -76,7 +75,7 @@ export default function ViewList( props ) {
         return total;
     }
 
-    // function to total cost of all items
+    // Calculate total cost of all items
     const listCost = () => {
         if (hasItems) {
             let total = 0;
@@ -89,11 +88,14 @@ export default function ViewList( props ) {
         }
     }    
     
-    // function to convert list to text for simple sharing
+    // Convert list to text for simple sharing
     const saveToText = () => {
         if (hasItems) {
             let text = "";
             items.map(item => {
+                if (item.isClaimed) {
+                    text += `${item.name} - $${item.cost.toFixed(2)} [CLAIMED]: ${item.itemURL} \n \n`;
+                }
                 text += `${item.name} - $${item.cost.toFixed(2)}: ${item.itemURL} \n \n`;
             });
             toast.success("List successfully copied as text to your clipboard!", {theme: "colored"})
@@ -110,13 +112,13 @@ export default function ViewList( props ) {
         setCopied(true);
     }    
 
+    // URL for shared list that incorporates listID and userID
     const sharedID = `${listID}l${Math.floor(Math.random() * 90) + 10}u${userId}share`;
-
 
     // function to handle modals
     const handleModal = (divRef) => {
         !isVisible ? (
-            setThisItem(divRef), 
+            // setThisItem(divRef), 
             divRef.style.display = "flex",
             setTimeout(() => {
                 document.body.style.overflow = "hidden",
@@ -134,8 +136,8 @@ export default function ViewList( props ) {
         setIsVisible(!isVisible);
     }
     
-
-    if (!list) {
+    // Loading indicator 
+    if (isLoading) {
         return (
             <div className="loading col">
                 <h2>Loading...</h2>
@@ -178,15 +180,12 @@ export default function ViewList( props ) {
                     { hasItems ? items.map(item => (
                         <ListItem 
                             key={`${item.id}`}
-                            list={list} 
-                            setList={setList} 
                             items={items}
                             setItems={setItems}
                             item={item} 
                             handleModal={handleModal} 
                             isVisible={isVisible} 
                             thisItem={thisItem}
-                            getThisList={getThisList}
                         />
                     )) : (
                         <div id="no-items" className="col">
@@ -199,7 +198,16 @@ export default function ViewList( props ) {
                 </div>
             </div>
             <div className="modal-bg" ref={newItemModal}>
-                <NewItem userInfo={userInfo} items={items} setItems={setItems} list={list} setList={setList} handleModal={handleModal} setHasItems={setHasItems} newItemModal={newItemModal} />
+                <NewItem 
+                    userInfo={userInfo} 
+                    items={items} 
+                    setItems={setItems} 
+                    list={list} 
+                    setList={setList} 
+                    handleModal={handleModal} 
+                    setHasItems={setHasItems} 
+                    newItemModal={newItemModal} 
+                />
             </div>
         </div>
     );

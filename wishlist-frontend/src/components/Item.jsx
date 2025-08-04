@@ -1,7 +1,5 @@
 import { useRef, useState } from "react";
-import { useParams } from "react-router";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
 import { toast } from "react-toastify";
 
 export default function Item( props ) {
@@ -9,7 +7,7 @@ export default function Item( props ) {
     // get params, refs, states, & props
     const confirmDialog = useRef(null);
     const [ confirmOpen, setConfirmOpen ] = useState(false);
-    const { items, setItems, item, handleModal, thisItem, claimed, setClaimed, manageClaimedAdmin } = props;
+    const { items, setItems, item, handleModal, thisItem, claimed, manageClaimedAdmin } = props;
 
     // function to handle confirm popup
     const handleConfirm = () => {
