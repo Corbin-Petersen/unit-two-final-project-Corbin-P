@@ -96,6 +96,7 @@ export default function ViewList( props ) {
             items.map(item => {
                 text += `${item.name} - $${item.cost.toFixed(2)}: ${item.itemURL} \n \n`;
             });
+            toast.success("List successfully copied as text to your clipboard!", {theme: "colored"})
             return text;
         } else {
             return "This list is empty";

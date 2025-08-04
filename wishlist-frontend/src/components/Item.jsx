@@ -47,7 +47,7 @@ export default function Item( props ) {
             }
             let refreshList = items.splice(itemIndex, 1);
             setList(refreshList);
-            toast.success("Item deleted successfully");
+            toast.success("Item deleted successfully", {theme: "colored"});
         } catch (error) {
             console.error(error.message);
             toast.error(error.message);
