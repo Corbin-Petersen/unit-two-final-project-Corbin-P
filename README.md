@@ -49,7 +49,8 @@ This will get the RESTful API backend running at port 8080
 To do so, open a new Terminal window and make sure you are in the `wishlist-frontend` folder, and type the following:  `npm run dev`. This will start up the frontend React application on port 5173.
 8. **In a browser, navigate to `http://localhost:5173` and begin using WistLish!**  
 
-> [!WARNING] | Known Issue  
+> [!WARNING]
+> **Known Issue**  
 > Due to the nature of React as a frontend, any refresh of the page after logging in will remove the ability to navigate back to the user's lists. Authentication will still allow editing the current page, but in order to navigate around the application as intended, the user must re-login to the application. 
 
 ## FUTURE FEATURES & FIXES
