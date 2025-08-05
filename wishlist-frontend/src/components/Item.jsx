@@ -43,7 +43,7 @@ export default function Item( props ) {
             if (response.status !== 204) {
                 throw new Error("Failed to delete item");
             }
-            let refreshList = items.splice(itemIndex, 1);
+            let refreshList = items.filter(item => item.id !== itemId);
             setItems(refreshList);
             toast.success("Item deleted successfully", {theme: "colored"});
         } catch (error) {
