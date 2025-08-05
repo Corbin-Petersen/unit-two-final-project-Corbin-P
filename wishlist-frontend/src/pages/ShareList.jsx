@@ -122,7 +122,7 @@ export default function ShareList( props ) {
     const listCost = () => {
         if (hasItems) {
             let total = 0;
-            items.forEach(item => {
+            items.map(item => {
                 total += (item.cost * item.quantity)
             });
             return total.toFixed(2);
