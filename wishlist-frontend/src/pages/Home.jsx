@@ -83,15 +83,15 @@ export default function Home( props ) {
                 <div id="login-text">
                     <h2>Login to get started!</h2>
                 </div>
-                <form name="login-form" id="login" method="post" onSubmit={handleLogin}>
+                <form name="login-form" id="login" method="post" autoComplete="on" onSubmit={handleLogin}>
                     <h3>LOGIN</h3>
                     <label>EMAIL
                         <input type="email" id="login-user" name="loginUser" placeholder="valid@email.com" onChange={setUser} />
                     </label>
                     <label>PASSWORD
-                        <input type="password" id="login-pass" name="loginPass" autoComplete="current password" onChange={setPass} />
+                        <input type="password" id="login-pass" name="loginPass" onChange={setPass} />
                     </label>
-                    <button type="submit" disabled={isLoading}>
+                    <button className="login-btn" type="submit" disabled={isLoading}>
                         {isLoading ? "LOADING..." : "LOGIN"}
                     </button>
                 </form>

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
@@ -67,13 +68,15 @@ export default function NewList( props ) {
 
     return (
         <div className="modal make-new col">
-            <button className="close square" onClick={() => cancelAdd(newListRef.current)}><i className="fa-solid fa-xmark"></i></button>
+            <button className="close square" onClick={() => cancelAdd(newListRef.current)}>
+                <FontAwesomeIcon icon="fa-solid fa-xmark" />
+            </button>
             <div id="new-list-header">
                 <h2>Create New List</h2>
             </div>
             <form name="new-list" id="new-list" className="col" method="post" onSubmit={submitNewList}>
                 <label>LIST NAME
-                    <input type="text" id="list-name" name="name" value={formData.name} onChange={handleChange} autoFocus required/>
+                    <input type="text" id="list-name" name="name" value={formData.name} onChange={handleChange} autoFocus required />
                 </label>
                 <label>DESCRIPTION
                     <textarea id="list-info" name="description" rows="5" value={formData.description} onChange={handleChange} required />
