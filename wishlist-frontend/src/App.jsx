@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Route, Routes } from "react-router";
-import { Footer, Header, Item, NavBlock, NewItem, NewList, ShareItem } from './components/exports';
+import { Footer, Header } from './components/exports';
 import { Home, Lists, ViewList, ShareList } from './pages/exports';
 import { ToastContainer } from 'react-toastify';
 import { library } from '@fortawesome/fontawesome-svg-core';
