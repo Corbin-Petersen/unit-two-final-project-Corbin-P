@@ -4,6 +4,7 @@ import com.example.wistlish_app.models.User;
 import com.example.wistlish_app.models.dto.UserDTO;
 
 public interface UserService {
+    // Security layer necessary for Spring Security
     User findByEmail(String email);
     User findById(int id);
     User saveUser(UserDTO user);

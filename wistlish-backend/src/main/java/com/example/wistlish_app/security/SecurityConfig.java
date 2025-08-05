@@ -24,19 +24,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.ott.OneTimeTokenGenerationSuccessHandler;
 import org.springframework.security.web.authentication.ott.RedirectOneTimeTokenGenerationSuccessHandler;
-import org.springframework.security.web.csrf.*;
 import org.springframework.security.web.util.UrlUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.util.List;
-import java.util.function.Supplier;
 
 @Configuration
 @EnableWebSecurity
@@ -47,11 +41,13 @@ public class SecurityConfig {
     @Autowired
     JwtRequestFilter jwtRequestFilter;
 
+    // Password hashing and encoding
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+    // Bean necessary for JWT authentication and allowing API URLs for specific CRUD operations
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -67,6 +63,7 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // Filters used for validation of tokens and specifying frontend port
     @Bean
     public CorsFilter corsFilter() {
         return new CorsFilter(corsConfigurationSource());
@@ -85,7 +82,12 @@ public class SecurityConfig {
         return source;
     }
 
-    // -------------------------------------
+/* -------------------------------------
+FUTURE FEATURES (from here below)
+ - Using one-time-tokens for resetting
+   passwords
+ - Authentication of user email address
+------------------------------------- */
 
     @Bean
     public OneTimeTokenGenerationSuccessHandler oneTimeTokenHandler (){

@@ -21,7 +21,7 @@ import java.util.List;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-
+    // Filter used by Spring Security for jwt authentication and white-listed API URLs
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired

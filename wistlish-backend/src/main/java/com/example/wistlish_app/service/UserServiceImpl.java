@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
-
+    // Service class used to process login authentication and override Spring Security methods
     @Autowired
     UserRepository userRepository;
     @Autowired
