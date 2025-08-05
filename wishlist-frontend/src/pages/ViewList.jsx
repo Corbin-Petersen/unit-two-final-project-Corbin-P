@@ -16,7 +16,6 @@ export default function ViewList( props ) {
     const [ list, setList ] = useState(null);
     const [ items, setItems ] = useState(null);
     const newItemModal = useRef(null);
-    const navigate = useNavigate();
     
     // USE EFFECT BLOCKS
     useEffect(() => {

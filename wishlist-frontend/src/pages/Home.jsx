@@ -1,9 +1,7 @@
 import { useRef, useState, useContext } from "react";
 import { useNavigate } from "react-router";
 import { toast } from 'react-toastify';
-import Error from "../components/Error";
 import NewUser from "../components/NewUser";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function Home( props ) {
     

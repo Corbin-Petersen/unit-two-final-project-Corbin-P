@@ -27,7 +27,7 @@ export default function Item( props ) {
         setConfirmOpen(!confirmOpen);
     }
 
-    // function to delete item
+    // DELETE item
     const deleteItem = async (itemId) => {
         //capture index of current item
         const itemIndex = items.findIndex((i) => i.id === itemId);

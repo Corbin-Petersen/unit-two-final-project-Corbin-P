@@ -7,7 +7,6 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 library.add(fas);
 
-
 function App() {
   const [ isLoggedIn, setIsLoggedIn ] = useState(false);
   const [ userID, setUserID ] = useState(null);
@@ -25,31 +24,33 @@ function App() {
     setUserLists(x);
   }
 
-  // check for cookie and set userID if exists
-  const getCurrentUser = async (currentID) => {
-    let response;
-    let data;
-    
-    response = await fetch(`http://localhost:8080/api/user/auth/${currentID}`, {
+  // FUTURE FEATURE: compare logged in user with current jwt token
+  const getCurrentUser = async (currentID) => {   
+    const response = await fetch(`http://localhost:8080/api/user/auth/${currentID}`, {
       method: 'GET',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       }
     });
+    const data = await response.json();
     if (response.ok) {
-      data = await response.json();
-      console.log(data);
       saveUser(data); 
     } 
   };
-
+  // FUTURE FEATURE: get user info based on valid jwt token
   const setCurrentUser = async () => {
     const res = await fetch(`http://localhost:8080/api/user/profile`, {
-      credentials: 'include'
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
     const data = await res.json();
-    setUserInfo(data);
+    if (res.ok) {
+      setUserInfo(data);
+    }
   }
     
   return (
@@ -65,10 +66,7 @@ function App() {
                   userID={userID}
                   setUserID={setUserID} 
                   userInfo={userInfo} 
-                  isLoggedIn={isLoggedIn} 
                   saveUserLists={saveUserLists}
-                  getCurrentUser={getCurrentUser}
-                  setCurrentUser={setCurrentUser}
                 />
               } />
               <Route path=":listID" element={<ViewList setUserID={setUserID} userID={userID} userInfo={userInfo} userLists={userLists} isLoggedIn={isLoggedIn} />} />

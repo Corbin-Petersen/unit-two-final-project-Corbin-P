@@ -2,14 +2,12 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import NewList from "../components/NewList";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { fas } from '@fortawesome/free-solid-svg-icons';
 import { toast } from "react-toastify";
 
 export default function Lists( props ) {
     // pull in params and set variables
     const { userId } = useParams();
-    const { userID, setUserID, userInfo, isLoggedIn, saveUserLists, getCurrentUser, setCurrentUser } = props;
+    const { userID, setUserID, userInfo, saveUserLists } = props;
     const [ isVisible, setIsVisible ] = useState(false);
     const [ hasLists, setHasLists ] = useState(true);
     const [ lists, setLists ] = useState([]);

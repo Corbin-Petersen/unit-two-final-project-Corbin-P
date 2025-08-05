@@ -9,7 +9,7 @@ export default function ListItem ( props ) {
         if (item.isClaimed) setClaimed(true);
     }, [claimed])
 
-    // PUT Mark item as Claimed
+    // PUT request - Mark item as Claimed
     const manageClaimedAdmin = async (itemId) => {
         //capture index of current item
         const itemIndex = items.findIndex((i) => i.id === itemId);
@@ -31,7 +31,6 @@ export default function ListItem ( props ) {
             toast.error(error.message, {theme: "colored"});
         }    
     }        
-    
 
     return (
         <Fragment key={`${item.id}`}>

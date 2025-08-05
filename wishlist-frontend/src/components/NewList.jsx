@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 
@@ -15,10 +15,6 @@ export default function NewList( props ) {
         userId: userId
     });
     const navigate = useNavigate();
-
-    // useEffect(() => {
-    //     console.log(userId);
-    // }, []);
 
     // set input handlers
     const handleChange = (e) => {
@@ -63,7 +59,6 @@ export default function NewList( props ) {
             console.error("Error creating new list:", error);
             toast.error("Error creating a new list: \n" + error.message, { theme: "colored" });
         }
-        
     }
 
     return (

@@ -93,7 +93,7 @@ export default function ShareList( props ) {
         }    
     }    
 
-    // PUT Mark item as Claimed
+    // PUT - Mark item as Claimed
     const manageClaimed = async (itemId) => {
         //capture index of current item
         const itemIndex = items.findIndex((i) => i.id === itemId);
@@ -122,9 +122,9 @@ export default function ShareList( props ) {
     const listCost = () => {
         if (hasItems) {
             let total = 0;
-            items.map(item => (
+            items.forEach(item => {
                 total += (item.cost * item.quantity)
-            ));
+            });
             return total.toFixed(2);
         } else {
             return "0.00";
