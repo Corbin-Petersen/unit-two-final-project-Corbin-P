@@ -48,6 +48,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
+    // User login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Authentication authenticationResponse = authenticationManager
@@ -74,6 +75,7 @@ public class UserController {
         }
     }
 
+/* --- FUTURE FEATURE - get user information based on valid jwt token --- */
     @GetMapping("/profile")
     public AuthResponse getProfile(@CurrentSecurityContext(expression = "authentication?.name") String email) {
         User existingUser = userService.findByEmail(email);
@@ -86,6 +88,7 @@ public class UserController {
     public record LoginRequest(String username, String password) {
     }
 
+/* --- FUTURE FEATURE - check logged in user against current jwt token --- */
     @GetMapping(value = "/auth/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getCurrentUser(HttpServletRequest request, @PathVariable(value = "userId") int userId ) {
         String token = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))

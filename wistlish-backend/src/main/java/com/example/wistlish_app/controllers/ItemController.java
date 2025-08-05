@@ -27,13 +27,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/items")
 public class ItemController {
-    // connect repositories
+
     @Autowired
     ItemRepository itemRepository;
     @Autowired
     WishlistRepository wishlistRepository;
 
-    // method to scrape images from a URL using JSoup
+    // method to scrape images from a URL using JSoup & HtmlUnit
     @GetMapping(value="/scrape-img", produces= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getImagesFromUrl(@RequestParam String url) {
         try (WebClient client = new WebClient(BrowserVersion.CHROME)) {

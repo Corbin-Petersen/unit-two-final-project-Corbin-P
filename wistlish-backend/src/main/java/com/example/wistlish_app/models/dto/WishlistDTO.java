@@ -1,9 +1,7 @@
 package com.example.wistlish_app.models.dto;
 
-import jakarta.persistence.Column;
-
 public class WishlistDTO {
-    // make fields necessary for wishlist creation
+    // DTO necessary for wishlist creation
     private String name;
     private String description;
     private boolean useClaimed;

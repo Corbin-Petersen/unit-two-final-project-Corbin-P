@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/{userId}/lists")
 public class WishlistController {
-    // connect repositories
+
     @Autowired
     WishlistRepository wishlistRepository;
     @Autowired

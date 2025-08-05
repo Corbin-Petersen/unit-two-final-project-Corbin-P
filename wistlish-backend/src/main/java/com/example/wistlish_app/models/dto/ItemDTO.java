@@ -1,11 +1,9 @@
 package com.example.wistlish_app.models.dto;
 
-import jakarta.persistence.Column;
-
 import java.math.BigDecimal;
 
 public class ItemDTO {
-    // make fields necessary for item creation
+    // DTO necessary for item creation
     private String name;
     private String itemUrl;
     private String imageUrl;
@@ -14,7 +12,6 @@ public class ItemDTO {
     private int listId;
 
     // Getters and Setters
-
     public String getName() {
         return name;
     }

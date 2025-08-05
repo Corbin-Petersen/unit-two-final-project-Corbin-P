@@ -3,7 +3,7 @@ package com.example.wistlish_app.models.dto;
 import jakarta.validation.constraints.*;
 
 public class UserDTO {
-    // make fields necessary for user creation
+    // DTO necessary for user creation WITH VALIDATION
     @NotBlank(message = "First Name is required")
     private String firstName;
     @NotBlank(message = "Last Name is required")

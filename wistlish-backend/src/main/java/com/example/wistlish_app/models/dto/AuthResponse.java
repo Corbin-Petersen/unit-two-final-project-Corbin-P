@@ -1,17 +1,18 @@
 package com.example.wistlish_app.models.dto;
 
 public class AuthResponse {
+    // Basic DTO to supply authentication results
     private int id;
     private String token;
     private String firstName;
     private String lastName;
 
+    // Constructors
     public AuthResponse(int id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }
-
     public AuthResponse(int id, String firstName, String lastName, String token) {
         this.id = id;
         this.firstName = firstName;

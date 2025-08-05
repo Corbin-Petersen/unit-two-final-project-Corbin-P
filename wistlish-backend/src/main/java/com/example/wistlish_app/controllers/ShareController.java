@@ -21,14 +21,13 @@ import java.util.Map;
 public class ShareController {
 
     @Autowired
-    UserRepository userRepository;
-    @Autowired
     UserService userService;
     @Autowired
     WishlistRepository wishlistRepository;
     @Autowired
     ItemRepository itemRepository;
 
+    // GET User info for a shared list
     @GetMapping(value = "/user/{userID}info", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getListOwner(@PathVariable(value = "userID") int userID) {
         User user = userService.findById(userID);

@@ -2,6 +2,12 @@ package com.example.wistlish_app.models;
 
 import jakarta.persistence.*;
 
+/* ------------------------------------------------
+FUTURE FEATURE - Adding a profile picture to a user
+ - Model created with database relationship with
+   intention to add functionality in future release
+------------------------------------------------ */
+
 @Entity
 public class UserImage {
     // creating the structure with necessary foreign keys

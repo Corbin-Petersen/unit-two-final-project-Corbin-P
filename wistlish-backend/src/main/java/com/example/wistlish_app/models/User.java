@@ -7,7 +7,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,10 +15,11 @@ import java.util.List;
 
 @Entity
 public class User implements UserDetails {
-    // creating the structure with necessary foreign keys
+    // Model structure with necessary foreign keys
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private int id;
+
     private String firstName;
     private String lastName;
     @Column(unique = true)
@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
-    // OTP related fields
+/* --- FUTURE FEATURE - OTP related fields --- */
     private String verifyOtp;
     private Boolean isAccountVerified;
     private Long verifyOtpExpireAt;

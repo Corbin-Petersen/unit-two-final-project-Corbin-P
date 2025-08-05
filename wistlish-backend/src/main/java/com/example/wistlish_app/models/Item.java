@@ -2,13 +2,12 @@ package com.example.wistlish_app.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
 public class Item {
-    // creating the structure with necessary foreign keys
+    // Model structure with necessary foreign keys
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
