@@ -54,15 +54,6 @@ footer {
     align-items: center;
     margin-bottom: 75px;
 }
-.home-component {
-    display: flex;
-    flex-direction: row;
-    width: 75vw;
-    height: auto;
-    padding: 0 20px;
-    background-color: white;
-    align-items: center;
-}
 
 .reset {
     display: flex;
@@ -494,21 +485,35 @@ label {
 ------------ WELCOME/LOGIN ------------
 ------------------------------------ */
 
+.home-component {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 75vw;
+    justify-content: flex-start;
+    height: auto;
+    padding: 0 20px;
+    background-color: white;
+    align-items: center;
+}
 #about-info {
     box-sizing: border-box;
     border-radius: 10px;
-    flex-grow: 1;
+    flex: 1 1 0%;
     align-self: stretch;
     background-color: rgb(223, 231, 246);
     padding: 20px;
+    min-width: 300px;
 }
 #about-info p {
     font-weight: 300;
     letter-spacing: .05em;
 }
 #login-info {
+    flex: 0 0 300px;
     justify-content: center;
     padding: 20px;
+    margin: 0 auto;
 }
 
 #login-text {
@@ -516,7 +521,7 @@ label {
 }
 
 #login {
-    width: 300px;
+    width: 100%;
     margin: auto;
     padding-bottom: 50px;
     text-align: left;

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function NewUser( props ) {
-    const { closeModal, modalDiv } = props;
+    const { closeModal } = props;
     const [ matches, setMatches ] = useState(false);
     const [ retypedPass, setRetypedPass ] = useState("");
     const [ newUser, setNewUser ] = useState({
@@ -16,6 +16,8 @@ export default function NewUser( props ) {
     useEffect(() => {
         if (retypedPass === newUser.userPass) {
             setMatches(true);
+        } else {
+            setMatches(false);
         };
     }, [retypedPass]);
 

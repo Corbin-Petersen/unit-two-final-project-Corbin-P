@@ -87,9 +87,9 @@ export default function ViewList( props ) {
             let text = "";
             items.forEach(item => {
                 if (item.isClaimed) {
-                    text += `${item.name} - $${item.cost.toFixed(2)} [CLAIMED]: ${item.itemURL} \n \n`;
+                    text += `${item.name} - $${item.cost.toFixed(2)} [CLAIMED]: ${item.itemUrl} \n \n`;
                 }
-                text += `${item.name} - $${item.cost.toFixed(2)}: ${item.itemURL} \n \n`;
+                text += `${item.name} - $${item.cost.toFixed(2)}: ${item.itemUrl} \n \n`;
             });
             toast.success("List successfully copied as text to your clipboard!", {theme: "colored"})
             return text;

@@ -3,10 +3,14 @@ import Item from "./Item";
 
 export default function ListItem ( props ) {
     const { items, setItems, item, handleModal, isVisible, thisItem } = props;
-    const [ claimed, setClaimed ] =useState(false);
+    const [ claimed, setClaimed ] = useState(null);
 
     useEffect(() => {
-        if (item.isClaimed) setClaimed(true);
+        if (item.isClaimed) {
+            setClaimed(true);
+        } else {
+            setClaimed(false);
+        }
     }, [claimed])
 
     // PUT request - Mark item as Claimed
@@ -36,7 +40,7 @@ export default function ListItem ( props ) {
         <Fragment key={`${item.id}`}>
             <div id={`${item.id}`} className="item col" onClick={(e) => handleModal(e.currentTarget.nextElementSibling)} style={{pointerEvents: isVisible ? "none" : "auto"}}>
                 <div className="item-block-img" style={{backgroundImage: item.imageUrl == "" ? "/src/assets/default-img.png" : `url(${item.imageUrl})`}} title={item.imageUrl == "" ? "default image" : item.name}>
-                    {claimed && 
+                    {item.isClaimed && 
                         <p className="claimed-item">CLAIMED!</p>
                     }
                 </div>

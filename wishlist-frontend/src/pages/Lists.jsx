@@ -55,7 +55,7 @@ export default function Lists( props ) {
         const listIndex = lists.findIndex((i) => i.id === id);
 
         try {
-            const response = await fetch(`http://localhost:8080/list_api/${userId}/lists/${id}/delete`, {
+            const response = await fetch(`http://localhost:8080/api/${userId}/lists/${id}/delete`, {
                 method: 'DELETE',
                 credentials: 'include',
                 headers: {

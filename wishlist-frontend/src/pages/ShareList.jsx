@@ -16,7 +16,6 @@ export default function ShareList( props ) {
     const [ isLoading, setIsLoading ] = useState(false);
     const [ userInfo, setUserInfo] = useState(null);
     const [ claimToken, setClaimToken ] = useState(null);
-    const [ claimed, setClaimed ] = useState(false);
 
     // Pull listID and userID from sharedID
     const listID = sharedID.slice(0, sharedID.indexOf("l"));
@@ -92,31 +91,6 @@ export default function ShareList( props ) {
             setIsLoading(false);
         }    
     }    
-
-    // PUT - Mark item as Claimed
-    const manageClaimed = async (itemId) => {
-        //capture index of current item
-        const itemIndex = items.findIndex((i) => i.id === itemId);
-
-        try {
-            const response = await fetch(`http://localhost:8080/api/shared/${itemId}/update`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ claimToken })
-            });    
-            const data = await response.json();
-            if (response.status !== 200) {
-                throw new Error("Unable to update item status.");
-            }
-            // update claimed status and saved token
-            items[itemIndex].isClaimed = data.isClaimed;
-            items[itemIndex].claimToken = data.claimToken;
-            setClaimed(!claimed);
-        } catch (error) {
-            console.error(error);
-            toast.error(error.message, {theme: "colored"});
-        }    
-    }        
 
     // calculate total cost of all items
     const listCost = () => {
@@ -201,7 +175,7 @@ export default function ShareList( props ) {
                             </div>
                         </div>
                         <div id={`${item.id}-view`} className="modal-bg" >
-                            <ShareItem item={item} handleModal={handleModal} thisItem={thisItem} manageClaimed={manageClaimed} claimToken={claimToken} setClaimToken={setClaimToken} claimed={claimed} setClaimed={setClaimed} />
+                            <ShareItem items={items} item={item} handleModal={handleModal} thisItem={thisItem} claimToken={claimToken} setClaimToken={setClaimToken} />
                         </div>
                     </Fragment>
                     )) : (

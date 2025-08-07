@@ -97,7 +97,7 @@ export default function Home( props ) {
                     <p>Don't have an account? <span className="emphasis" style={{cursor: "pointer"}} onClick={() => openModal(registerUser)}>Sign up here!</span></p>
                 </div>
                 <div className="modal-bg" ref={registerUser}>
-                    <NewUser closeModal={closeModal} modalDiv={modalDiv} />
+                    <NewUser closeModal={closeModal} />
                 </div>
             </div>
         </div>
