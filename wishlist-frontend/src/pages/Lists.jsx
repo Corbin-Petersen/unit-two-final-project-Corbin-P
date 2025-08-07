@@ -36,16 +36,17 @@ export default function Lists( props ) {
                     'Content-Type': 'application/json'
                 }
             });
-            const data = await response.json();
-            if (response.status === 404) {
-                throw new Error("No lists were found");
+            if (response.status === 204) {
+                toast.info("Create your first list!", {theme: "colored"});
             } else if (response.status !== 404 && !response.ok) {
                 throw new Error("Error fetching lists");
+            } else {
+                const data = await response.json();
+                saveUserLists(data);
+                setLists(data);
             }
-            saveUserLists(data);
-            setLists(data);
         } catch (error) {
-            toast.error(error.message);
+            console.error(error.message);
         }
     }
 

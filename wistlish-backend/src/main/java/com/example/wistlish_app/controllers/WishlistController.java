@@ -27,7 +27,7 @@ public class WishlistController {
     public ResponseEntity<?> getAllLists(@PathVariable(value = "userId") int userId) {
         List<Wishlist> userLists = wishlistRepository.findAllByUserId(userId);
         if (userLists == null || userLists.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No lists found for user with ID: " + userId);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No lists found for user with ID: " + userId);
         } else {
             return ResponseEntity.ok(userLists);
         }

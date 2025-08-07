@@ -20,9 +20,7 @@ export default function Item( props ) {
         ) : (
             confirmDialog.current.style.opacity = "0",
             confirmDialog.current.style.transform = "scale(.9)",
-            setTimeout(() => {
-                confirmDialog.current.style.display = "none"
-            }, 250)
+            confirmDialog.current.style.display = "none"
         );
         setConfirmOpen(!confirmOpen);
     }
