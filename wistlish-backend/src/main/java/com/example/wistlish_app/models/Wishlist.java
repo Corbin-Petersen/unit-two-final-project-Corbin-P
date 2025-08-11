@@ -27,7 +27,7 @@ public class Wishlist {
     @JsonBackReference
     private User user;
 
-    @OneToMany(mappedBy="list")
+    @OneToMany(mappedBy="list", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private final List<Item> items = new ArrayList<>();
 
