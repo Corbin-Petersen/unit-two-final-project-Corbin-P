@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -85,5 +84,4 @@ public class JwtUtil {
         User userDetails = userService.findByEmail(userEmail);
         return (email.equals(userDetails.getEmail()) && !isTokenExpired(token));
     }
-
 }

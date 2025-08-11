@@ -52,7 +52,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .cors(Customizer.withDefaults())
-            .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity, enable in production
+            .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for stateless JWT authentication
             .authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers("/api/items/scrape-img", "/api/user/register", "/api/user/login", "/api/user/auth/**", "/api/user/profile", "/api/shared/**")
                 .permitAll().anyRequest().authenticated())
